@@ -1,4 +1,3 @@
-````md
 # 🎟️ Event Reservation System
 
 ![Symfony](https://img.shields.io/badge/Symfony-6.4-black?logo=symfony)
