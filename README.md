@@ -48,7 +48,6 @@ Doctrine ORM
       ↓
 Database (MariaDB)
 ```
-````
 
 ---
 
