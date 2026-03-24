@@ -1,0 +1,10 @@
+{# templates/admin/dashboard.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block body %}
+<div class="alert alert-success">
+    ✅ Bienvenue <strong>{{ app.user.username }}</strong> ! Dashboard admin .
+</div>
+{% endblock %}

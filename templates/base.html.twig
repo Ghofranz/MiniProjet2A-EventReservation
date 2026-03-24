@@ -29,11 +29,11 @@
                     <a class="nav-link" href="{{ path('event_index') }}">Événements</a>
                 </li>
             </ul>
-            {# <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto">
                 {% if app.user %}
                     {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('admin_dashboard') }}">⚙️ Admin</a>
+                            {# <a class="nav-link" href="{{ path('admin_dashboard') }}">⚙️ Admin</a> #}
                         </li>
                     {% endif %}
                     <li class="nav-item">
@@ -44,12 +44,12 @@
                         <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
                     </li>
                 {% endif %}
-            </ul> #}
-            <ul class="navbar-nav ms-auto">
+            </ul>
+            {# <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <span class="nav-link">Public area</span>
                 </li>
-            </ul>
+            </ul> #}
         </div>
     </div>
 </nav>
