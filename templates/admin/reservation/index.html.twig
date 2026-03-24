@@ -1,0 +1,43 @@
+{# templates/admin/reservation/index.html.twig #}
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Réservations{% endblock %}
+
+{% block admin_body %}
+<h2 class="mb-4">📋 Toutes les réservations</h2>
+
+{% if reservations is empty %}
+    <div class="alert alert-info">Aucune réservation pour le moment.</div>
+{% else %}
+<table class="table table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th>
+            <th>Événement</th><th>Date réservation</th><th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for res in reservations %}
+        <tr>
+            <td>{{ res.id }}</td>
+            <td><strong>{{ res.name }}</strong></td>
+            <td>{{ res.email }}</td>
+            <td>{{ res.phone }}</td>
+            <td>
+                <a href="{{ path('event_show', {id: res.event.id}) }}" target="_blank">
+                    {{ res.event.title }}
+                </a>
+            </td>
+            <td>{{ res.createdAt|date('d/m/Y H:i') }}</td>
+            <td>
+                <form method="post" action="{{ path('admin_reservation_delete', {id: res.id}) }}" style="display:inline"
+                      onsubmit="return confirm('Supprimer cette réservation ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-res-' ~ res.id) }}">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

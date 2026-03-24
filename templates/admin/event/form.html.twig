@@ -1,0 +1,48 @@
+{# templates/admin/event/form.html.twig #}
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block admin_body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ title }}</h2>
+    <a href="{{ path('admin_event_index') }}" class="btn btn-outline-secondary">← Retour</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    {{ form_row(form.title) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.seats) }}
+                </div>
+                <div class="col-12">
+                    {{ form_row(form.description) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.date) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.location) }}
+                </div>
+                <div class="col-12">
+                    {{ form_row(form.imageFile) }}
+                    {% if event.image %}
+                        <div class="mt-2">
+                            <small class="text-muted">Image actuelle :</small><br>
+                            <img src="{{ asset('uploads/' ~ event.image) }}" style="height:80px;border-radius:6px;" alt="">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <hr>
+            {{ form_row(form.submit) }}
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

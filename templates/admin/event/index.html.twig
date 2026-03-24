@@ -1,0 +1,50 @@
+{# templates/admin/event/index.html.twig #}
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Gestion des événements{% endblock %}
+
+{% block admin_body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🎪 Événements</h2>
+    <a href="{{ path('admin_event_new') }}" class="btn btn-success">+ Nouvel événement</a>
+</div>
+
+{% if events is empty %}
+    <div class="alert alert-info">Aucun événement. Créez-en un !</div>
+{% else %}
+<table class="table table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Image</th><th>Titre</th><th>Date</th>
+            <th>Lieu</th><th>Places</th><th>Réservations</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>
+                {% if event.image %}
+                    <img src="{{ asset('uploads/' ~ event.image) }}" style="width:60px;height:45px;object-fit:cover;border-radius:4px;">
+                {% else %}
+                    <span>🎪</span>
+                {% endif %}
+            </td>
+            <td><strong>{{ event.title }}</strong></td>
+            <td>{{ event.date|date('d/m/Y') }}</td>
+            <td>{{ event.location }}</td>
+            <td><span class="badge bg-info">{{ event.seats }}</span></td>
+            <td><span class="badge bg-secondary">{{ event.reservations|length }}</span></td>
+            <td>
+                <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-sm btn-outline-primary" target="_blank">👁️</a>
+                <a href="{{ path('admin_event_edit', {id: event.id}) }}" class="btn btn-sm btn-warning">✏️</a>
+                <form method="post" action="{{ path('admin_event_delete', {id: event.id}) }}" style="display:inline"
+                      onsubmit="return confirm('Supprimer « {{ event.title }} » ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-event-' ~ event.id) }}">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}
