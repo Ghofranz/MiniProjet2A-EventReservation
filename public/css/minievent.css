@@ -1773,6 +1773,7 @@ h3 { font-size: clamp(1.25rem, 3vw, 1.5rem); }
         box-shadow: none;
         border: 1px solid #ddd;
     }
+}
     /* =====================================================
    Symfony Form Overrides
    ===================================================== */
@@ -1809,4 +1810,39 @@ h3 { font-size: clamp(1.25rem, 3vw, 1.5rem); }
     font-size: 0.9rem;
     color: var(--gray-700);
 }
+/* Fix hero height */
+.hero {
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+}
+
+/* Fix events grid overlap with hero */
+.events-section {
+    margin-top: -80px;
+    padding-top: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Fix cards grid — force 2 colonnes minimum */
+.events-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+    gap: 2rem !important;
+}
+
+/* Fix event-image height */
+.event-image {
+    height: 200px !important;
+    overflow: hidden;
+    position: relative;
+}
+
+.event-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: auto;
+    flex-wrap: wrap;
 }

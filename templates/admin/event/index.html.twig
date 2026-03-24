@@ -1,50 +1,106 @@
-{# templates/admin/event/index.html.twig #}
-{% extends 'admin/base_admin.html.twig' %}
-{% block title %}Gestion des événements{% endblock %}
+{# templates/event/index.html.twig #}
+{% extends 'base.html.twig' %}
 
-{% block admin_body %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>🎪 Événements</h2>
-    <a href="{{ path('admin_event_new') }}" class="btn btn-success">+ Nouvel événement</a>
-</div>
+{% block title %}Événements{% endblock %}
 
-{% if events is empty %}
-    <div class="alert alert-info">Aucun événement. Créez-en un !</div>
-{% else %}
-<table class="table table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Image</th><th>Titre</th><th>Date</th>
-            <th>Lieu</th><th>Places</th><th>Réservations</th><th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for event in events %}
-        <tr>
-            <td>
-                {% if event.image %}
-                    <img src="{{ asset('uploads/' ~ event.image) }}" style="width:60px;height:45px;object-fit:cover;border-radius:4px;">
-                {% else %}
-                    <span>🎪</span>
-                {% endif %}
-            </td>
-            <td><strong>{{ event.title }}</strong></td>
-            <td>{{ event.date|date('d/m/Y') }}</td>
-            <td>{{ event.location }}</td>
-            <td><span class="badge bg-info">{{ event.seats }}</span></td>
-            <td><span class="badge bg-secondary">{{ event.reservations|length }}</span></td>
-            <td>
-                <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-sm btn-outline-primary" target="_blank">👁️</a>
-                <a href="{{ path('admin_event_edit', {id: event.id}) }}" class="btn btn-sm btn-warning">✏️</a>
-                <form method="post" action="{{ path('admin_event_delete', {id: event.id}) }}" style="display:inline"
-                      onsubmit="return confirm('Supprimer « {{ event.title }} » ?')">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete-event-' ~ event.id) }}">
-                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endif %}
+{% block body %}
+
+{# ═══ HERO ═══ #}
+<section class="hero">
+    <div class="container">
+        <h1><i class="fas fa-sparkles"></i> Nos Événements</h1>
+        <p>Découvrez une sélection d'événements exceptionnels et réservez votre place en quelques clics</p>
+    </div>
+    <div class="hero-decoration" style="width:300px;height:300px;top:-100px;left:-100px;"></div>
+    <div class="hero-decoration" style="width:200px;height:200px;bottom:-50px;right:10%;animation-delay:2s;"></div>
+</section>
+
+{# ═══ EVENTS GRID ═══ #}
+<section class="events-section">
+    <div class="container">
+
+        {% if events is empty %}
+            <div class="no-events">
+                <i class="fas fa-calendar-xmark"></i>
+                <h3>Aucun événement disponible</h3>
+                <p>Revenez bientôt pour découvrir nos prochains événements !</p>
+            </div>
+        {% else %}
+            <div class="events-grid">
+                {% for event in events %}
+
+                    {# Variables de statut #}
+                    {% set isPast = event.date < date() %}
+                    {% set day = event.date|date('d') %}
+                    {% set month = event.date|date('M')|upper %}
+
+                    <article class="event-card">
+
+                        {# Image #}
+                        <div class="event-image">
+                            {% if event.image %}
+                                <img src="{{ asset('uploads/' ~ event.image) }}"
+                                     alt="{{ event.title }}"
+                                     style="width:100%;height:100%;object-fit:cover;">
+                            {% else %}
+                                <div class="event-image-placeholder">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            {% endif %}
+
+                            {# Badge date #}
+                            <div class="event-date-badge">
+                                <span class="day">{{ day }}</span>
+                                <span class="month">{{ month }}</span>
+                            </div>
+
+                            {# Badge statut #}
+                            <span class="event-badge {{ isPast ? 'past' : 'upcoming' }}">
+                                {{ isPast ? 'Terminé' : 'À venir' }}
+                            </span>
+                        </div>
+
+                        {# Contenu #}
+                        <div class="event-content">
+                            <h3>{{ event.title }}</h3>
+
+                            <div class="event-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ event.location }}
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ event.date|date('d/m/Y à H:i') }}
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-users"></i>
+                                    {{ event.seats }} places
+                                </span>
+                            </div>
+
+                            <p class="event-description">
+                                {{ event.description|slice(0, 120) }}{{ event.description|length > 120 ? '…' : '' }}
+                            </p>
+
+                            <div class="event-actions" style="display:flex;gap:1rem;align-items:center;margin-top:auto;">
+                                <span style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 1rem;background:var(--primary-gradient);color:white;border-radius:var(--radius-full);font-size:0.85rem;font-weight:600;">
+                                    <i class="fas fa-ticket-alt"></i> {{ event.seats }} places
+                                </span>
+                                <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-primary">
+                                    <span>Voir & Réserver</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
 {% endblock %}
