@@ -518,24 +518,32 @@ h3 { font-size: clamp(1.25rem, 3vw, 1.5rem); }
 .hero::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -1px;
     left: 0;
     right: 0;
-    height: 220px; /* plus long = plus smooth */
+    height: 420px; /* plus long = plus smooth */
     background: linear-gradient(
         to bottom,
-        rgba(15, 23, 42, 0) 0%,
-        rgba(15, 23, 42, 0.3) 30%,
-        rgba(248, 250, 252, 0.6) 65%,
+        /* rgba(15, 23, 42, 0) 0%,
+        rgba(15, 23, 42, 0.3) 28%,
+        rgba(248, 250, 252, 0.6) 72%,
+        var(--gray-50) 100% */
+          rgba(15, 23, 42, 0) 0%,
+        rgba(15, 23, 42, 0.08) 18%,
+        rgba(15, 23, 42, 0.16) 34%,
+        rgba(248, 250, 252, 0.18) 58%,
+        rgba(248, 250, 252, 0.55) 78%,
+        rgba(248, 250, 252, 0.88) 92%,
         var(--gray-50) 100%
     );
     pointer-events: none;
+    z-index: 1;
 }
 
 
 .hero .container {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     text-align: center;
 }
 
@@ -589,12 +597,57 @@ h3 { font-size: clamp(1.25rem, 3vw, 1.5rem); }
 /* =====================================================
    Events Grid
    ===================================================== */
-.events-section {
+/* .events-section {
+    background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0) 0%,
+        rgba(15, 23, 42, 0.3) 30%,
+        rgba(248, 250, 252, 0.6) 65%,
+        var(--gray-50) 100%
+    );
     padding: 2rem 0 4rem;
     position: relative;
     margin-top: -150px; 
     padding-top: 3rem;
     z-index: 2;
+} */
+ .events-section {
+    position: relative;
+    padding: 3rem 0 4rem;
+    margin-top: -40px; /* pour remonter la section sur le dégradé du hero */
+    z-index: 2;
+    overflow: hidden;
+}
+
+.events-section::before,
+.events-section::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 0;
+    animation: float 7s ease-in-out infinite;
+}
+
+.events-section::before {
+    width: 260px;
+    height: 260px;
+    top: 40px;
+    left: -80px;
+}
+
+.events-section::after {
+    width: 220px;
+    height: 220px;
+    bottom: 30px;
+    right: -60px;
+}
+
+.events-section .container {
+    position: relative;
+    z-index: 1;
 }
 
 .section-header {
