@@ -1,0 +1,56 @@
+{# templates/event/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block body %}
+<a href="{{ path('event_index') }}" class="btn btn-outline-secondary btn-sm mb-4">← Retour</a>
+
+<div class="row g-4">
+    {# Colonne gauche : détails événement #}
+    <div class="col-md-7">
+        <div class="card">
+            {% if event.image %}
+                <img src="{{ asset('uploads/' ~ event.image) }}" class="card-img-top" style="height:300px;object-fit:cover;" alt="{{ event.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h2 class="card-title">{{ event.title }}</h2>
+                <hr>
+                <p><strong>📍 Lieu :</strong> {{ event.location }}</p>
+                <p><strong>🗓️ Date :</strong> {{ event.date|date('d/m/Y à H:i') }}</p>
+                <p><strong>🪑 Places disponibles :</strong>
+                    <span class="badge bg-{{ event.seats > 10 ? 'success' : 'warning' }}">
+                        {{ event.seats }}
+                    </span>
+                </p>
+                <hr>
+                <h5>Description</h5>
+                <p class="card-text">{{ event.description|nl2br }}</p>
+            </div>
+        </div>
+    </div>
+
+    {# Colonne droite : formulaire de réservation #}
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📝 Réserver ma place</h5>
+            </div>
+            <div class="card-body">
+                {% if event.seats > 0 %}
+                    {{ form_start(reservationForm) }}
+                        {{ form_row(reservationForm.name) }}
+                        {{ form_row(reservationForm.email) }}
+                        {{ form_row(reservationForm.phone) }}
+                        {{ form_row(reservationForm.submit) }}
+                    {{ form_end(reservationForm) }}
+                {% else %}
+                    <div class="alert alert-danger">
+                        😔 Désolé, cet événement est complet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
