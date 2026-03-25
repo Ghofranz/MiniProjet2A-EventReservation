@@ -98,8 +98,8 @@
 
     <div class="event-details-body">
 
-        {% if event.seats > 0 %}
-
+        {# {% if event.seats > 0 %} #}
+{% if not isPast and not isFull %}
             {{ form_start(reservationForm) }}
 
             <div class="form-group">
@@ -132,15 +132,26 @@
                     <span>Confirmer ma réservation</span>
                 </button>
             </div>
-
+{# {{ form_end(reservationForm, { render_rest: false }) }} #}
            <div style="display: none;"> {{ form_end(reservationForm) }} 
 </div>
-        {% else %}
+        {# {% else %}
             <div class="alert alert-error">
                 <i class="fas fa-circle-exclamation"></i>
                 <span>Événement complet</span>
             </div>
-        {% endif %}
+        {% endif %} #}
+        {% elseif isPast %}
+    <div class="alert alert-error">
+        <i class="fas fa-clock"></i>
+        <span>Les réservations sont fermées : cet événement est déjà passé.</span>
+    </div>
+{% elseif isFull %}
+    <div class="alert alert-error">
+        <i class="fas fa-circle-exclamation"></i>
+        <span>Événement complet : il n’y a plus de places disponibles.</span>
+    </div>
+{% endif %}
 
     </div>
 </div>

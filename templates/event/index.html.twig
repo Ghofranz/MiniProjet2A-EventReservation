@@ -30,6 +30,7 @@
             <div class="events-grid">
                 {% for event in events %}
                     {% set isPast = event.date < date() %}
+                    {% set isFull = event.seats <= 0 %}
                     {% set day = event.date|date('d') %}
                     {% set month = event.date|date('M')|upper %}
 
@@ -48,9 +49,12 @@
                                 <span class="month">{{ month }}</span>
                             </div>
 
-                            <span class="event-badge {{ isPast ? 'past' : 'upcoming' }}">
+                            {# <span class="event-badge {{ isPast ? 'past' : 'upcoming' }}">
                                 {{ isPast ? 'Terminé' : 'À venir' }}
-                            </span>
+                            </span> #}
+                            <span class="event-badge {{ isPast ? 'past' : (isFull ? 'past' : 'upcoming') }}">
+    {{ isPast ? 'Terminé' : (isFull ? 'Complet' : 'À venir') }}
+</span>
                         </div>
 
                         <div class="event-content">
@@ -75,7 +79,7 @@
                                 {{ event.description|slice(0, 120) }}{{ event.description|length > 120 ? '…' : '' }}
                             </p>
 
-                            <div class="event-actions">
+                            {# <div class="event-actions">
                                 <span class="seats-badge">
                                     <i class="fas fa-ticket-alt"></i> {{ event.seats }} places
                                 </span>
@@ -83,7 +87,34 @@
                                     <span>Voir & Réserver</span>
                                     <i class="fas fa-arrow-right"></i>
                                 </a>
-                            </div>
+                            </div> #}
+                            <div class="event-actions">
+    {% if isPast %}
+        <span class="seats-badge" style="background: transparent; color: var(--gray-600);">
+            <i class="fas fa-clock"></i> Terminé
+        </span>
+        <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-secondary">
+            <span>Voir détails</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    {% elseif isFull %}
+        <span class="seats-badge" style="background: transparent; color: var(--danger);">
+            <i class="fas fa-ban"></i> Complet
+        </span>
+        <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-secondary">
+            <span>Voir détails</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    {% else %}
+        <span class="seats-badge">
+            <i class="fas fa-ticket-alt"></i> {{ event.seats }} places
+        </span>
+        <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-primary">
+            <span>Voir & Réserver</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    {% endif %}
+</div>
                         </div>
                     </article>
                 {% endfor %}
