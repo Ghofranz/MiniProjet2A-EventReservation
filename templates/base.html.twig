@@ -3,76 +3,128 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}EventRes{% endblock %}</title>
-    <link rel="stylesheet" href="https://bootswatch.com/5/flatly/bootstrap.min.css">
-    <style>
-        body { padding-top: 70px; }
-        .navbar-brand { font-weight: bold; font-size: 1.4rem; }
-        .card { transition: transform .2s; }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,.12); }
-        .badge-seats { font-size: .8rem; }
-        footer { margin-top: 60px; padding: 20px 0; border-top: 1px solid #dee2e6; color: #6c757d; }
-    </style>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EventRes{% endblock %} - EventRes</title>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/minievent.css') }}">
+
+    {% block stylesheets %}{% endblock %}
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+{# ═══════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════ #}
+<nav class="navbar" id="navbar">
     <div class="container">
-        <a class="navbar-brand" href="{{ path('event_index') }}">🎟️ EventRes</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-            <span class="navbar-toggler-icon"></span>
+        <a href="{{ path('event_index') }}" class="logo">
+            <i class="fas fa-calendar-alt"></i>
+            <span>EventRes</span>
+        </a>
+
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navMenu">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('event_index') }}">Événements</a>
+
+        <ul class="nav-menu" id="navMenu">
+            <li>
+                <a href="{{ path('event_index') }}"
+                   class="{{ app.request.attributes.get('_route') == 'event_index' ? 'active' : '' }}">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+            </li>
+
+            {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a href="{{ path('admin_dashboard') }}"
+                       class="{{ app.request.attributes.get('_route') starts with 'admin' ? 'active' : '' }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
                 </li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                {% if app.user %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('admin_dashboard') }}">⚙️ Admin</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion ({{ app.user.username }})</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
-                    </li>
                 {% endif %}
-            </ul>
-            {# <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <span class="nav-link">Public area</span>
+                <li>
+                    <a href="{{ path('app_logout') }}" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Déconnexion ({{ app.user.username }})</span>
+                    </a>
                 </li>
-            </ul> #}
-        </div>
+            {% else %}
+                <li>
+                    <a href="{{ path('app_login') }}"
+                       class="{{ app.request.attributes.get('_route') == 'app_login' ? 'active' : '' }}">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
     </div>
 </nav>
 
-<main class="container mt-4">
-    {# Messages flash #}
-    {% for type, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ type == 'success' ? 'success' : (type == 'error' ? 'danger' : 'info') }} alert-dismissible fade show">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+{# ═══════════════════════════════════════════════
+   FLASH MESSAGES
+   ═══════════════════════════════════════════════ #}
+{% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="container">
+            <div class="alert alert-{{ type == 'success' ? 'success' : (type == 'error' ? 'error' : 'info') }}">
+                <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-circle' }}"></i>
+                <span>{{ message }}</span>
             </div>
-        {% endfor %}
+        </div>
     {% endfor %}
+{% endfor %}
 
+{# ═══════════════════════════════════════════════
+   MAIN CONTENT
+   ═══════════════════════════════════════════════ #}
+<main>
     {% block body %}{% endblock %}
 </main>
 
-<footer class="container text-center">
-    <p>© 2026 EventRes — ISSAT Sousse</p>
+{# ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ #}
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3><i class="fas fa-calendar-alt"></i> EventRes</h3>
+                <p>Plateforme moderne de gestion et réservation d'événements.</p>
+            </div>
+            <div class="footer-links">
+                <ul>
+                    <li><a href="{{ path('event_index') }}"><i class="fas fa-home"></i> Accueil</a></li>
+                    {% if app.user and is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    {% else %}
+                    <li><a href="{{ path('app_login') }}"><i class="fas fa-user-shield"></i> Administration</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="footer-info">
+                <p><i class="fas fa-university"></i> Université de Sousse</p>
+                <p><i class="fas fa-building"></i> ISSAT Sousse</p>
+                <p><i class="fas fa-users"></i> FIA2-GL</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© {{ "now"|date("Y") }} EventRes </p>
+        </div>
+    </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('js/minievent.js') }}"></script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

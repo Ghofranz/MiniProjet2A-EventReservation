@@ -25,42 +25,91 @@ class EventController extends AbstractController
     }
 
     // ─── Détail d'un événement + formulaire de réservation ──────────────────
-    #[Route('/event/{id}', name: 'event_show', requirements: ['id' => '\d+'])]
-    public function show(
-        int $id,
-        EventRepository $repo,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        $event = $repo->find($id);
+    // #[Route('/event/{id}', name: 'event_show', requirements: ['id' => '\d+'])]
+    // public function show(
+    //     int $id,
+    //     EventRepository $repo,
+    //     Request $request,
+    //     EntityManagerInterface $em
+    // ): Response {
+    //     $event = $repo->find($id);
 
-        if (!$event) {
-            throw $this->createNotFoundException('Événement introuvable.');
-        }
+    //     if (!$event) {
+    //         throw $this->createNotFoundException('Événement introuvable.');
+    //     }
 
-        // Créer une nouvelle réservation liée à cet événement
-        $reservation = new Reservation();
-        $reservation->setEvent($event);
+    //     // Créer une nouvelle réservation liée à cet événement
+    //     $reservation = new Reservation();
+    //     $reservation->setEvent($event);
 
-        $form = $this->createForm(ReservationType::class, $reservation);
-        $form->handleRequest($request);
+    //     $form = $this->createForm(ReservationType::class, $reservation);
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $em->persist($reservation);
+    //         $em->flush();
+
+    //         $this->addFlash('success', '🎉 Réservation confirmée !');
+    //         return $this->redirectToRoute('reservation_confirm', [
+    //             'id' => $reservation->getId(),
+    //         ]);
+    //     }
+
+    //     return $this->render('event/show.html.twig', [
+    //         'event'           => $event,
+    //         'reservationForm' => $form,
+    //     ]);
+    // }
+#[Route('/event/{id}', name: 'event_show', requirements: ['id' => '\d+'])]
+public function show(
+    int $id,
+    EventRepository $repo,
+    Request $request,
+    EntityManagerInterface $em
+): Response {
+    $event = $repo->find($id);
+
+    if (!$event) {
+        throw $this->createNotFoundException('Événement introuvable.');
+    }
+
+    $now = new \DateTimeImmutable();
+    $isPast = $event->getDate() !== null && $event->getDate() < $now;
+    $isFull = $event->getSeats() !== null && $event->getSeats() <= 0;
+
+    $reservation = new Reservation();
+    $reservation->setEvent($event);
+
+    $form = $this->createForm(ReservationType::class, $reservation);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted()) {
+        if ($isPast) {
+            $this->addFlash('error', 'Les réservations sont fermées : cet événement est déjà passé.');
+        } elseif ($isFull) {
+            $this->addFlash('error', 'Impossible de réserver : il n’y a plus de places disponibles.');
+        } elseif ($form->isValid()) {
+            $event->setSeats($event->getSeats() - 1);
+
             $em->persist($reservation);
+            $em->persist($event);
             $em->flush();
 
             $this->addFlash('success', '🎉 Réservation confirmée !');
+
             return $this->redirectToRoute('reservation_confirm', [
                 'id' => $reservation->getId(),
             ]);
         }
-
-        return $this->render('event/show.html.twig', [
-            'event'           => $event,
-            'reservationForm' => $form,
-        ]);
     }
 
+    return $this->render('event/show.html.twig', [
+        'event' => $event,
+        'reservationForm' => $form,
+        'isPast' => $isPast,
+        'isFull' => $isFull,
+    ]);
+}
     // ─── Page de confirmation après réservation ─────────────────────────────
     #[Route('/reservation/confirm/{id}', name: 'reservation_confirm', requirements: ['id' => '\d+'])]
     public function confirm(int $id, EntityManagerInterface $em): Response

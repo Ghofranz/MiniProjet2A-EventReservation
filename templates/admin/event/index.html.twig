@@ -1,50 +1,153 @@
-{# templates/admin/event/index.html.twig #}
 {% extends 'admin/base_admin.html.twig' %}
-{% block title %}Gestion des événements{% endblock %}
+{% block title %}Gestion des événements - EventRes{% endblock %}
 
 {% block admin_body %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>🎪 Événements</h2>
-    <a href="{{ path('admin_event_new') }}" class="btn btn-success">+ Nouvel événement</a>
+<div class="dashboard-header">
+    <div>
+        <h1 style="font-size:1.65rem;padding:0;margin:0;display:flex;align-items:center;gap:0.5rem;">
+             Événements
+        </h1>
+        <p class="welcome-text">Gérez tous les événements de la plateforme</p>
+    </div>
+
+    <a href="{{ path('admin_event_new') }}" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i>
+        <span>Nouvel événement</span>
+    </a>
 </div>
 
-{% if events is empty %}
-    <div class="alert alert-info">Aucun événement. Créez-en un !</div>
-{% else %}
-<table class="table table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Image</th><th>Titre</th><th>Date</th>
-            <th>Lieu</th><th>Places</th><th>Réservations</th><th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for event in events %}
-        <tr>
-            <td>
-                {% if event.image %}
-                    <img src="{{ asset('uploads/' ~ event.image) }}" style="width:60px;height:45px;object-fit:cover;border-radius:4px;">
-                {% else %}
-                    <span>🎪</span>
-                {% endif %}
-            </td>
-            <td><strong>{{ event.title }}</strong></td>
-            <td>{{ event.date|date('d/m/Y') }}</td>
-            <td>{{ event.location }}</td>
-            <td><span class="badge bg-info">{{ event.seats }}</span></td>
-            <td><span class="badge bg-secondary">{{ event.reservations|length }}</span></td>
-            <td>
-                <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-sm btn-outline-primary" target="_blank">👁️</a>
-                <a href="{{ path('admin_event_edit', {id: event.id}) }}" class="btn btn-sm btn-warning">✏️</a>
-                <form method="post" action="{{ path('admin_event_delete', {id: event.id}) }}" style="display:inline"
-                      onsubmit="return confirm('Supprimer « {{ event.title }} » ?')">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete-event-' ~ event.id) }}">
-                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endif %}
+<div class="dashboard-card">
+    <div class="card-header">
+        <h2>
+            <i class="fas fa-list"></i>
+            Liste des événements
+        </h2>
+        <span class="badge">{{ events|length }} événement(s)</span>
+    </div>
+
+    {% if events is empty %}
+        <div class="no-data">
+            <i class="fas fa-calendar-plus"></i>
+            <h3>Aucun événement</h3>
+            <p>Commencez par créer votre premier événement</p>
+            <a href="{{ path('admin_event_new') }}" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-plus"></i>
+                <span>Créer un événement</span>
+            </a>
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Titre</th>
+                        <th>Date</th>
+                        <th>Lieu</th>
+                        <th>Places</th>
+                        <th>Réservations</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                        <tr>
+                            <td>
+                                {% if event.image %}
+                                    <img
+                                        src="{{ asset('uploads/' ~ event.image) }}"
+                                        alt="{{ event.title }}"
+                                        style="width:70px;height:50px;object-fit:cover;border-radius:8px;box-shadow:var(--shadow-sm);"
+                                    >
+                                {% else %}
+                                    <div style="
+                                        width:70px;
+                                        height:50px;
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        border-radius:8px;
+                                        background: var(--gray-100);
+                                        color: var(--primary);
+                                        font-size: 1.2rem;
+                                    ">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <strong>{{ event.title }}</strong>
+                            </td>
+
+                            <td>
+                                <div style="display:flex;flex-direction:column;">
+                                    <span style="font-weight:600;">{{ event.date|date('d/m/Y') }}</span>
+                                    <small style="color: var(--gray-500);">
+                                        <i class="fas fa-clock"></i> {{ event.date|date('H:i') }}
+                                    </small>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span style="display:flex;align-items:center;gap:0.5rem;">
+                                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
+                                    {{ event.location }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge">{{ event.seats }}</span>
+                            </td>
+
+                            <td>
+                                <span style="
+                                    display:inline-flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    min-width:36px;
+                                    padding:0.35rem 0.75rem;
+                                    border-radius:9999px;
+                                    background: var(--gray-200);
+                                    color: var(--gray-700);
+                                    font-size:0.8rem;
+                                    font-weight:600;
+                                ">
+                                    {{ event.reservations|length }}
+                                </span>
+                            </td>
+
+                            <td class="actions-cell">
+                                <div class="action-buttons">
+                                    <a href="{{ path('event_show', {id: event.id}) }}"
+                                       class="btn btn-small btn-secondary"
+                                       title="Voir"
+                                       target="_blank">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+
+                                    <a href="{{ path('admin_event_edit', {id: event.id}) }}"
+                                       class="btn btn-small btn-info"
+                                       title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form method="post"
+                                          action="{{ path('admin_event_delete', {id: event.id}) }}"
+                                          style="display:inline"
+                                          onsubmit="return confirm('Supprimer « {{ event.title }} » ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-event-' ~ event.id) }}">
+                                        <button type="submit" class="btn btn-small btn-danger" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

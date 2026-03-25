@@ -17,19 +17,49 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class AdminController extends AbstractController
 {
     // ─── Tableau de bord ────────────────────────────────────────────────────
-    #[Route('/dashboard', name: 'admin_dashboard')]
-    public function dashboard(
-        EventRepository $eventRepo,
-        ReservationRepository $reservationRepo
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    // #[Route('/dashboard', name: 'admin_dashboard')]
+    // public function dashboard(
+    //     EventRepository $eventRepo,
+    //     ReservationRepository $reservationRepo
+    // ): Response {
+    //     $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->render('admin/dashboard.html.twig', [
-            'totalEvents'       => count($eventRepo->findAll()),
-            'totalReservations' => count($reservationRepo->findAll()),
-            'latestEvents'      => $eventRepo->findBy([], ['date' => 'DESC'], 5),
-        ]);
+    //     return $this->render('admin/dashboard.html.twig', [
+    //         'totalEvents'       => count($eventRepo->findAll()),
+    //         'totalReservations' => count($reservationRepo->findAll()),
+    //         'latestEvents'      => $eventRepo->findBy([], ['date' => 'DESC'], 5),
+    //     ]);
+    // }
+    #[Route('/dashboard', name: 'admin_dashboard')]
+public function dashboard(
+    EventRepository $eventRepo,
+    ReservationRepository $reservationRepo
+): Response {
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+    $allEvents = $eventRepo->findBy([], ['date' => 'DESC']);
+    $latestEvents = array_slice($allEvents, 0, 100);
+
+    $upcomingCount = 0;
+    $finishedCount = 0;
+    $now = new \DateTime();
+
+    foreach ($allEvents as $event) {
+        if ($event->getDate() && $event->getDate() > $now) {
+            $upcomingCount++;
+        } else {
+            $finishedCount++;
+        }
     }
+
+    return $this->render('admin/dashboard.html.twig', [
+        'totalEvents'       => count($allEvents),
+        'totalReservations' => count($reservationRepo->findAll()),
+        'latestEvents'      => $latestEvents,
+        'upcomingCount'     => $upcomingCount,
+        'finishedCount'     => $finishedCount,
+    ]);
+}
 
     // ─── Liste des événements ────────────────────────────────────────────────
     #[Route('/events', name: 'admin_event_index')]
