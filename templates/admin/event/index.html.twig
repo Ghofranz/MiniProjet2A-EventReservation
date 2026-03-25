@@ -1,112 +1,153 @@
-{# templates/event/index.html.twig #}
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Gestion des événements - EventRes{% endblock %}
 
-{% block title %}Événements{% endblock %}
+{% block admin_body %}
+<div class="dashboard-header">
+    <div>
+        <h1 style="font-size:1.65rem;padding:0;margin:0;display:flex;align-items:center;gap:0.5rem;">
+             Événements
+        </h1>
+        <p class="welcome-text">Gérez tous les événements de la plateforme</p>
+    </div>
 
-{% block body %}
+    <a href="{{ path('admin_event_new') }}" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i>
+        <span>Nouvel événement</span>
+    </a>
+</div>
 
-{# ═══ HERO ═══ #}
-<section class="hero">
-    <div class="container">
-    <p style="font-size:12px; text-align:center; 
-            padding:10px;  
-            letter-spacing:1px;">
-  +17k lieux disponibles · Déjà choisis par +1M de participants
-</p>
+<div class="dashboard-card">
+    <div class="card-header">
+        <h2>
+            <i class="fas fa-list"></i>
+            Liste des événements
+        </h2>
+        <span class="badge">{{ events|length }} événement(s)</span>
+    </div>
 
-        <h1><i class="fas fa-calendar-alt"></i> Nos Événements</h1>
-        <p style="color: var(--gray-100);">Découvrez une sélection d'événements exceptionnels et réservez votre place en quelques clics</p>
-     </div>
-    <div class="hero-decoration" style="width:300px;height:300px;top:-100px;left:-100px;"></div>
-    <div class="hero-decoration" style="width:200px;height:200px;bottom:-50px;right:10%;animation-delay:2s;"></div>
-</section>
+    {% if events is empty %}
+        <div class="no-data">
+            <i class="fas fa-calendar-plus"></i>
+            <h3>Aucun événement</h3>
+            <p>Commencez par créer votre premier événement</p>
+            <a href="{{ path('admin_event_new') }}" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-plus"></i>
+                <span>Créer un événement</span>
+            </a>
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Titre</th>
+                        <th>Date</th>
+                        <th>Lieu</th>
+                        <th>Places</th>
+                        <th>Réservations</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                        <tr>
+                            <td>
+                                {% if event.image %}
+                                    <img
+                                        src="{{ asset('uploads/' ~ event.image) }}"
+                                        alt="{{ event.title }}"
+                                        style="width:70px;height:50px;object-fit:cover;border-radius:8px;box-shadow:var(--shadow-sm);"
+                                    >
+                                {% else %}
+                                    <div style="
+                                        width:70px;
+                                        height:50px;
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        border-radius:8px;
+                                        background: var(--gray-100);
+                                        color: var(--primary);
+                                        font-size: 1.2rem;
+                                    ">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                {% endif %}
+                            </td>
 
-{# ═══ EVENTS GRID ═══ #}
-<section class="events-section">
-    <div class="container">
+                            <td>
+                                <strong>{{ event.title }}</strong>
+                            </td>
 
-        {% if events is empty %}
-            <div class="no-events">
-                <i class="fas fa-calendar-xmark"></i>
-                <h3>Aucun événement disponible</h3>
-                <p>Revenez bientôt pour découvrir nos prochains événements !</p>
-            </div>
-        {% else %}
-            <div class="events-grid">
-                {% for event in events %}
-
-                    {# Variables de statut #}
-                    {% set isPast = event.date < date() %}
-                    {% set day = event.date|date('d') %}
-                    {% set month = event.date|date('M')|upper %}
-
-                    <article class="event-card">
-
-                        {# Image #}
-                        <div class="event-image">
-                            {% if event.image %}
-                                <img src="{{ asset('uploads/' ~ event.image) }}"
-                                     alt="{{ event.title }}"
-                                     style="width:100%;height:100%;object-fit:cover;">
-                            {% else %}
-                                <div class="event-image-placeholder">
-                                    <i class="fas fa-calendar-alt"></i>
+                            <td>
+                                <div style="display:flex;flex-direction:column;">
+                                    <span style="font-weight:600;">{{ event.date|date('d/m/Y') }}</span>
+                                    <small style="color: var(--gray-500);">
+                                        <i class="fas fa-clock"></i> {{ event.date|date('H:i') }}
+                                    </small>
                                 </div>
-                            {% endif %}
+                            </td>
 
-                            {# Badge date #}
-                            <div class="event-date-badge">
-                                <span class="day">{{ day }}</span>
-                                <span class="month">{{ month }}</span>
-                            </div>
-
-                            {# Badge statut #}
-                            <span class="event-badge {{ isPast ? 'past' : 'upcoming' }}">
-                                {{ isPast ? 'Terminé' : 'À venir' }}
-                            </span>
-                        </div>
-
-                        {# Contenu #}
-                        <div class="event-content">
-                            <h3>{{ event.title }}</h3>
-
-                            <div class="event-meta">
-                                <span class="meta-item">
-                                    <i class="fas fa-map-marker-alt"></i>
+                            <td>
+                                <span style="display:flex;align-items:center;gap:0.5rem;">
+                                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
                                     {{ event.location }}
                                 </span>
-                                <span class="meta-item">
-                                    <i class="fas fa-calendar"></i>
-                                    {{ event.date|date('d/m/Y à H:i') }}
+                            </td>
+
+                            <td>
+                                <span class="badge">{{ event.seats }}</span>
+                            </td>
+
+                            <td>
+                                <span style="
+                                    display:inline-flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    min-width:36px;
+                                    padding:0.35rem 0.75rem;
+                                    border-radius:9999px;
+                                    background: var(--gray-200);
+                                    color: var(--gray-700);
+                                    font-size:0.8rem;
+                                    font-weight:600;
+                                ">
+                                    {{ event.reservations|length }}
                                 </span>
-                                <span class="meta-item">
-                                    <i class="fas fa-users"></i>
-                                    {{ event.seats }} places
-                                </span>
-                            </div>
+                            </td>
 
-                            <p class="event-description">
-                                {{ event.description|slice(0, 120) }}{{ event.description|length > 120 ? '…' : '' }}
-                            </p>
+                            <td class="actions-cell">
+                                <div class="action-buttons">
+                                    <a href="{{ path('event_show', {id: event.id}) }}"
+                                       class="btn btn-small btn-secondary"
+                                       title="Voir"
+                                       target="_blank">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
 
-                            <div class="event-actions" style="display:flex;gap:1rem;align-items:center;margin-top:auto;">
-                                <span style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 1rem;background:var(--primary-gradient);color:white;border-radius:var(--radius-full);font-size:0.85rem;font-weight:600;">
-                                    <i class="fas fa-ticket-alt"></i> {{ event.seats }} places
-                                </span>
-                                <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-primary">
-                                    <span>Voir & Réserver</span>
-                                    <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
+                                    <a href="{{ path('admin_event_edit', {id: event.id}) }}"
+                                       class="btn btn-small btn-info"
+                                       title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
 
-                    </article>
-
-                {% endfor %}
-            </div>
-        {% endif %}
-
-    </div>
-</section>
-
+                                    <form method="post"
+                                          action="{{ path('admin_event_delete', {id: event.id}) }}"
+                                          style="display:inline"
+                                          onsubmit="return confirm('Supprimer « {{ event.title }} » ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-event-' ~ event.id) }}">
+                                        <button type="submit" class="btn btn-small btn-danger" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
