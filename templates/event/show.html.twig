@@ -1,56 +1,210 @@
-{# templates/event/show.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ event.title }}{% endblock %}
 
 {% block body %}
-<a href="{{ path('event_index') }}" class="btn btn-outline-secondary btn-sm mb-4">← Retour</a>
 
-<div class="row g-4">
-    {# Colonne gauche : détails événement #}
-    <div class="col-md-7">
-        <div class="card">
-            {% if event.image %}
-                <img src="{{ asset('uploads/' ~ event.image) }}" class="card-img-top" style="height:300px;object-fit:cover;" alt="{{ event.title }}">
-            {% endif %}
-            <div class="card-body">
-                <h2 class="card-title">{{ event.title }}</h2>
-                <hr>
-                <p><strong>📍 Lieu :</strong> {{ event.location }}</p>
-                <p><strong>🗓️ Date :</strong> {{ event.date|date('d/m/Y à H:i') }}</p>
-                <p><strong>🪑 Places disponibles :</strong>
-                    <span class="badge bg-{{ event.seats > 10 ? 'success' : 'warning' }}">
-                        {{ event.seats }}
-                    </span>
-                </p>
-                <hr>
-                <h5>Description</h5>
-                <p class="card-text">{{ event.description|nl2br }}</p>
-            </div>
+<section class="event-details-section">
+    <div class="container">
+
+        <div class="breadcrumb">
+            <a href="{{ path('event_index') }}">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
         </div>
+
+        <div class="row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+
+            {# ================= LEFT ================= #}
+            <div class="event-details-card">
+
+    {% if event.image %}
+    <div class="event-main-image event-main-image-framed">
+        <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}">
+    </div>
+    {% endif %}
+
+    <div class="event-details-body">
+        <h1 style="margin-bottom:1rem;">{{ event.title }}</h1>
+            {# <div class="event-details-card">
+
+                {% if event.image %}
+                <div class="event-main-image" style="margin:0;">
+                    <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}">
+                </div>
+                {% endif %}
+
+                <div class="event-details-body">
+
+                    <h1 style="margin-bottom:1rem;">{{ event.title }}</h1> #}
+
+                    <div class="event-info-grid">
+
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <h4>Lieu</h4>
+                                <p>{{ event.location }}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <h4>Date</h4>
+                                <p>{{ event.date|date('d/m/Y à H:i') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <h4>Places disponibles</h4>
+                                <p>
+                                    <span class="badge">
+                                        {{ event.seats }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="event-description-section">
+                        <h2><i class="fas fa-align-left"></i> Description</h2>
+                        <div class="description-content">
+                            {{ event.description|nl2br }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {# ================= RIGHT ================= #}
+            <div class="event-details-card reservation-card" style="height: fit-content;">
+
+    <div class="reservation-card-header">
+        <h2 style="color: #000000; font-size:1.8rem;padding: 1.75rem 1.5rem;margin-top: 1rem;">
+            
+            Réserver ma place
+        </h2>
     </div>
 
-    {# Colonne droite : formulaire de réservation #}
-    <div class="col-md-5">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">📝 Réserver ma place</h5>
+    <div class="event-details-body">
+
+        {% if event.seats > 0 %}
+
+            {{ form_start(reservationForm) }}
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-user"></i> Nom complet
+                </label>
+                {{ form_widget(reservationForm.name) }}
+                {{ form_errors(reservationForm.name) }}
             </div>
-            <div class="card-body">
-                {% if event.seats > 0 %}
-                    {{ form_start(reservationForm) }}
-                        {{ form_row(reservationForm.name) }}
-                        {{ form_row(reservationForm.email) }}
-                        {{ form_row(reservationForm.phone) }}
-                        {{ form_row(reservationForm.submit) }}
-                    {{ form_end(reservationForm) }}
-                {% else %}
-                    <div class="alert alert-danger">
-                        😔 Désolé, cet événement est complet.
-                    </div>
-                {% endif %}
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-envelope"></i> Email
+                </label>
+                {{ form_widget(reservationForm.email) }}
+                {{ form_errors(reservationForm.email) }}
             </div>
-        </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-phone"></i> Téléphone
+                </label>
+                {{ form_widget(reservationForm.phone) }}
+                {{ form_errors(reservationForm.phone) }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-dark-blue btn-lg btn-block">
+                    <i class="fas fa-check"></i>
+                    <span>Confirmer ma réservation</span>
+                </button>
+            </div>
+
+           <div style="display: none;"> {{ form_end(reservationForm) }} 
+</div>
+        {% else %}
+            <div class="alert alert-error">
+                <i class="fas fa-circle-exclamation"></i>
+                <span>Événement complet</span>
+            </div>
+        {% endif %}
+
     </div>
 </div>
+            {# <div class="event-details-card" style="height: fit-content;">
+
+                <div class="event-details-header" style="background: white; padding:1.5rem;">
+                    <h2 style="color: #000000; font-size:1.8rem;">
+                       
+                        Réserver ma place
+                    </h2>
+                </div>
+
+                <div class="event-details-body">
+
+                    {% if event.seats > 0 %}
+
+                        {{ form_start(reservationForm) }}
+
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-user"></i> Nom complet
+                            </label>
+                            {{ form_widget(reservationForm.name) }}
+                            {{ form_errors(reservationForm.name) }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-envelope"></i> Email
+                            </label>
+                            {{ form_widget(reservationForm.email) }}
+                            {{ form_errors(reservationForm.email) }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-phone"></i> Téléphone
+                            </label>
+                            {{ form_widget(reservationForm.phone) }}
+                            {{ form_errors(reservationForm.phone) }}
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-dark-blue btn-lg btn-block">
+                                <i class="fas fa-check"></i>
+                                <span>Confirmer ma réservation</span>
+                            </button>
+                        </div>
+
+                        {{ form_end(reservationForm) }}
+
+                    {% else %}
+                        <div class="alert alert-error">
+                            <i class="fas fa-circle-exclamation"></i>
+                            <span>Événement complet</span>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div> #}
+
+        </div>
+
+    </div>
+</section>
+
 {% endblock %}

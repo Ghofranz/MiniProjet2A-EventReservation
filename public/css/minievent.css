@@ -1820,6 +1820,59 @@ body.login-page .nav-menu a {
     border-top: 1px solid var(--gray-700);
     font-size: 0.9rem;
 }
+/* ===== Event show page fixes ===== */
+
+.reservation-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.reservation-card-header {
+    padding: 1.4rem 1.6rem 0.8rem 1.6rem;
+    background: transparent;
+    border-bottom: none;
+}
+
+.reservation-card-header h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.reservation-card-header h2 i {
+    color: var(--primary);
+}
+
+.event-main-image-framed {
+    margin: 1.25rem 1.25rem 0 1.25rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.event-main-image-framed img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    display: block;
+}
+
+.reservation-card .form-actions {
+    margin-top: 1.5rem;
+}
+
+.reservation-card .btn-block {
+    width: 100%;
+}
+
+.reservation-card .event-details-body {
+    padding-top: 1rem;
+}
 
 /* =====================================================
    Animations
