@@ -1456,12 +1456,12 @@ body.login-page .nav-menu a {
     padding: 1.5rem 2rem;
     flex-wrap: wrap;
     gap: 1rem;
-    background: linear-gradient(
+    /* background: linear-gradient(
         -135deg,
        #12314d 2%,
         #375B75 2%,
         #12314d 100%
-    );
+    ); */
      /* background: linear-gradient(
         to right,
         #12314d 0%,
@@ -1504,7 +1504,14 @@ body.login-page .nav-menu a {
 }
 
 .stat-card {
-    background: var(--white);
+    background: var(--white );
+    background: linear-gradient(
+        135deg,
+      white 0%,
+        rgba(255, 255, 255, 0.8) 50%,
+        white 100%
+    );
+    color: #f6f0f0;
     padding: 1.75rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
