@@ -1,0 +1,136 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Tableau de bord - EventRes{% endblock %}
+
+{% block admin_body %}
+<div class="dashboard-header">
+    <div>
+        <p style="font-size:1.2rem;font-family: 'Playfair Display', Georgia, serif; color: var(--gray-110);">
+            Bienvenue, <strong>{{ app.user.userIdentifier }}</strong> 👋
+        </p>
+    </div>
+    <a href="{{ path('admin_event_new') }}" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i>
+        <span>Nouvel événement</span>
+    </a>
+</div>
+
+<div class="stats-grid">
+    {# <div class="stat-card">
+        <div class="stat-icon bg-primary">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ totalEvents }}</h3>
+            <p>Événements</p>
+        </div>
+    </div> #}
+    <a href="{{ path('admin_event_index') }}" class="stat-card stat-card-link">
+    <div class="stat-icon bg-primary">
+        <i class="fas fa-calendar-alt"></i>
+    </div>
+    <div class="stat-info">
+        <h3>{{ totalEvents }}</h3>
+        <p>Événements</p>
+    </div>
+</a>
+
+    {# <div class="stat-card">
+        <div class="stat-icon bg-success">
+            <i class="fas fa-ticket-alt"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ totalReservations }}</h3>
+            <p>Réservations</p>
+        </div>
+    </div> #}
+    <a href="{{ path('admin_reservation_index') }}" class="stat-card stat-card-link">
+    <div class="stat-icon bg-success">
+        <i class="fas fa-ticket-alt"></i>
+    </div>
+    <div class="stat-info">
+        <h3>{{ totalReservations }}</h3>
+        <p>Réservations</p>
+    </div>
+</a>
+
+    <div class="stat-card">
+        <div class="stat-icon bg-info">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-info">
+            {% set upcomingCount = 0 %}
+            {% for event in latestEvents %}
+                {% if event.date and event.date > date() %}
+                    {% set upcomingCount = upcomingCount + 1 %}
+                {% endif %}
+            {% endfor %}
+            <h3>{{ upcomingCount }}</h3>
+            <p>À venir</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon bg-warning">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ latestEvents|length - upcomingCount }}</h3>
+            <p>Terminés</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <div class="card-header">
+        <h2><i class="fas fa-list"></i> Événements récents</h2>
+        <span class="badge">{{ latestEvents|length }} événement(s)</span>
+    </div>
+
+    {% if latestEvents is empty %}
+        <div class="no-data">
+            <i class="fas fa-calendar-plus"></i>
+            <h3>Aucun événement</h3>
+            <p>Commencez par créer votre premier événement</p>
+            <a href="{{ path('admin_event_new') }}" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-plus"></i>
+                <span>Créer un événement</span>
+            </a>
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Date</th>
+                        <th>Lieu</th>
+                        <th>Places</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in latestEvents %}
+                        <tr>
+                            <td><strong>{{ event.title }}</strong></td>
+                            <td>{{ event.date|date('d/m/Y') }}</td>
+                            <td>{{ event.location }}</td>
+                            <td>
+                                <span class="badge">{{ event.seats }}</span>
+                            </td>
+                            <td class="actions-cell">
+                                <div class="action-buttons">
+                                    <a href="{{ path('admin_event_edit', {id: event.id}) }}"
+                                       class="btn btn-small btn-info" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

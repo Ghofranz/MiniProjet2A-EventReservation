@@ -1,17 +1,130 @@
+{# templates/base.html.twig #}
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EventRes{% endblock %} - EventRes</title>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/minievent.css') }}">
+
+    {% block stylesheets %}{% endblock %}
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+{# ═══════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════ #}
+<nav class="navbar" id="navbar">
+    <div class="container">
+        <a href="{{ path('event_index') }}" class="logo">
+            <i class="fas fa-calendar-alt"></i>
+            <span>EventRes</span>
+        </a>
+
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <ul class="nav-menu" id="navMenu">
+            <li>
+                <a href="{{ path('event_index') }}"
+                   class="{{ app.request.attributes.get('_route') == 'event_index' ? 'active' : '' }}">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+            </li>
+
+            {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a href="{{ path('admin_dashboard') }}"
+                       class="{{ app.request.attributes.get('_route') starts with 'admin' ? 'active' : '' }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="{{ path('app_logout') }}" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Déconnexion ({{ app.user.username }})</span>
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ path('app_login') }}"
+                       class="{{ app.request.attributes.get('_route') == 'app_login' ? 'active' : '' }}">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+{# ═══════════════════════════════════════════════
+   FLASH MESSAGES
+   ═══════════════════════════════════════════════ #}
+{% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="container">
+            <div class="alert alert-{{ type == 'success' ? 'success' : (type == 'error' ? 'error' : 'info') }}">
+                <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-circle' }}"></i>
+                <span>{{ message }}</span>
+            </div>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{# ═══════════════════════════════════════════════
+   MAIN CONTENT
+   ═══════════════════════════════════════════════ #}
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+{# ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ #}
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3><i class="fas fa-calendar-alt"></i> EventRes</h3>
+                <p>Plateforme moderne de gestion et réservation d'événements.</p>
+            </div>
+            <div class="footer-links">
+                <ul>
+                    <li><a href="{{ path('event_index') }}"><i class="fas fa-home"></i> Accueil</a></li>
+                    {% if app.user and is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    {% else %}
+                    <li><a href="{{ path('app_login') }}"><i class="fas fa-user-shield"></i> Administration</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="footer-info">
+                <p><i class="fas fa-university"></i> Université de Sousse</p>
+                <p><i class="fas fa-building"></i> ISSAT Sousse</p>
+                <p><i class="fas fa-users"></i> FIA2-GL</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© {{ "now"|date("Y") }} EventRes </p>
+        </div>
+    </div>
+</footer>
+
+<script src="{{ asset('js/minievent.js') }}"></script>
+{% block javascripts %}{% endblock %}
+</body>
 </html>

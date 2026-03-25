@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation confirmée{% endblock %}
+
+{% block body %}
+<section class="event-details-section">
+    <div class="container">
+
+        <div class="breadcrumb">
+            <a href="{{ path('event_index') }}">
+                <i class="fas fa-arrow-left"></i> Retour aux événements
+            </a>
+        </div>
+
+        <div class="event-details-card" style="max-width: 900px; margin: 0 auto; overflow: hidden;">
+
+            <div class="event-details-header" style="text-align:center;">
+                <h1>
+                    <i class="fas fa-circle-check"></i>
+                    Réservation confirmée !
+                </h1>
+                <p style="color: var(--gray-300); margin-top: 0.75rem; font-size: 1.05rem;">
+                    Merci <strong>{{ reservation.name }}</strong>, votre place a bien été enregistrée.
+                </p>
+            </div>
+
+            <div class="event-details-body">
+
+                <div class="event-info-grid" style="margin-bottom: 2rem;">
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h4>Événement</h4>
+                            <p>{{ reservation.event.title }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h4>Lieu</h4>
+                            <p>{{ reservation.event.location }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h4>Date</h4>
+                            <p>{{ reservation.event.date|date('d/m/Y à H:i') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h4>Email</h4>
+                            <p>{{ reservation.email }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reservation-form-section" style="text-align:center;">
+                    <h2>
+                        <i class="fas fa-check-circle"></i>
+                        Votre réservation est validée
+                    </h2>
+                    <p class="form-subtitle" style="margin-bottom: 0;">
+                        Un email de confirmation pourra être envoyé à
+                        <strong>{{ reservation.email }}</strong>.
+                    </p>
+                </div>
+
+                <div class="form-actions" style="justify-content:center; margin-top: 2rem;">
+                    <a href="{{ path('event_index') }}" class="btn btn-dark-blue btn-lg">
+                        <i class="fas fa-calendar"></i>
+                        <span>Voir d'autres événements</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

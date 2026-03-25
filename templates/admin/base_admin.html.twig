@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row">
+
+    {# Sidebar #}
+    {# <div class="col-md-2">
+        <div class="card sticky-top" style="top:80px;">
+            <div class="card-header bg-dark text-white text-center">
+                <strong>⚙️ Admin</strong>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{{ path('admin_dashboard') }}"
+                   class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
+                    📊 Tableau de bord
+                </a>
+                <a href="{{ path('admin_event_index') }}"
+                   class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'admin_event' ? 'active' : '' }}">
+                    🎪 Événements
+                </a>
+                <a href="{{ path('admin_reservation_index') }}"
+                   class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'admin_reservation' ? 'active' : '' }}">
+                    📋 Réservations
+                </a>
+                <a href="{{ path('app_logout') }}" class="list-group-item list-group-item-action text-danger">
+                    🚪 Déconnexion
+                </a>
+            </div>
+        </div>
+    </div> #}
+
+    {# Contenu principal #}
+    <div class="col-md-10">
+        {% block admin_body %}{% endblock %}
+    </div>
+
+</div>
+{% endblock %}

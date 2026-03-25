@@ -1,0 +1,119 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}{{ event.id ? ' Modifier' : ' Créer' }} un événement - EventRes{% endblock %}
+
+{% block admin_body %}
+<nav class="breadcrumb">
+    {# <a href="{{ path('admin_dashboard') }}" style="padding: 0.5rem 0.5rem;"> Dashboard</a>
+    {# <span><i class="fas fa-chevron-right"></i></span>
+    {# <a href="{{ path('admin_event_index') }}">Événements</a> #}
+    {# <span><i class="fas fa-chevron-right"></i></span>
+    <span style="text-decoration: underline;">{{ event.id ? 'Modifier' : 'Créer' }} Événement</span>  #} 
+</nav>
+
+<div class="event-details-card">
+    <div >
+        <h1 style="font-size: 1.65; margin-left: 1.5em;margin-top: 0.5em;">
+            
+            {{ event.id ? ' Modifier un événement' : 'Créer un événement' }}
+        </h1>
+    </div>
+
+    <div class="event-details-body">
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'id': 'eventForm'}}) }}
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.title.vars.id }}">
+                    <i class="fas fa-heading"></i> Titre
+                </label>
+                {{ form_widget(form.title, {'attr': {'placeholder': 'Ex: Tech Summit 2027'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.seats.vars.id }}">
+                    <i class="fas fa-users"></i> Places
+                </label>
+                {{ form_widget(form.seats, {'attr': {'min': 1, 'placeholder': 'Ex: 200'}}) }}
+                {{ form_errors(form.seats) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.vars.id }}">
+                <i class="fas fa-align-left"></i> Description
+            </label>
+            {{ form_widget(form.description, {'attr': {'rows': 5, 'placeholder': 'Décrivez votre événement...'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.date.vars.id }}">
+                    <i class="fas fa-calendar-alt"></i> Date & Heure
+                </label>
+                {{ form_widget(form.date) }}
+                {{ form_errors(form.date) }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.location.vars.id }}">
+                    <i class="fas fa-map-marker-alt"></i> Lieu
+                </label>
+                {{ form_widget(form.location, {'attr': {'placeholder': 'Ex: Tunis, Palais des Congrès'}}) }}
+                {{ form_errors(form.location) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.imageFile.vars.id }}">
+                <i class="fas fa-image"></i> Image
+            </label>
+
+            <label class="custom-file" for="{{ form.imageFile.vars.id }}">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span id="file-label-text">Cliquez pour sélectionner une image</span>
+            </label>
+
+            <div style="display:none;">
+                {{ form_widget(form.imageFile, {'attr': {'onchange': 'updateFileName(this)'}}) }}
+            </div>
+
+            <span class="field-hint">JPG, PNG, GIF, WEBP — max 5MB</span>
+            {{ form_errors(form.imageFile) }}
+
+            {% if event.image %}
+                <div class="current-image mt-2">
+                    <p>Image actuelle :</p>
+                    <img src="{{ asset('uploads/' ~ event.image) }}" alt="Image actuelle" style="height:80px;border-radius:6px;">
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            {{ form_widget(form.submit, {
+                'label': event.id ? 'Mettre à jour' : 'Enregistrer',
+                'attr': {'class': 'btn btn-primary btn-lg'}
+            }) }}
+
+            <a href="{{ path('admin_event_index') }}" class="btn btn-secondary btn-lg">
+                Annuler
+            </a>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<script>
+function updateFileName(input) {
+    const label = document.getElementById('file-label-text');
+    if (input.files && input.files.length > 0) {
+        label.textContent = input.files[0].name;
+    } else {
+        label.textContent = 'Cliquez pour sélectionner une image';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{# templates/admin/reservation/index.html.twig #}
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Réservations{% endblock %}
+{% block admin_body %}
+
+<nav class="breadcrumb">
+    {# <a href="{{ path('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <span><i class="fas fa-chevron-right"></i></span>
+    <span>Réservations</span> #}
+</nav>
+
+<div class="dashboard-header">
+    <div>
+        <h1 style="font-size:1.65rem;padding:0;margin:0;display:flex;align-items:center;gap:0.5rem;"> 
+        Réservations</h1>
+        <p class="welcome-text">
+            Liste complète des réservations
+        </p>
+    </div>
+</div>
+
+<div class="dashboard-card">
+
+    <div class="card-header">
+        <h2><i class="fas fa-list"></i> Toutes les réservations</h2>
+        <span class="badge">{{ reservations|length }} réservation(s)</span>
+    </div>
+
+    {% if reservations is empty %}
+        <div class="no-data">
+            <i class="fas fa-ticket-alt"></i>
+            <h3>Aucune réservation</h3>
+            <p>Aucune réservation pour le moment</p>
+        </div>
+    {% else %}
+
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Événement</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for res in reservations %}
+                <tr>
+                    <td><strong>#{{ res.id }}</strong></td>
+
+                    <td>
+                        <strong>{{ res.name }}</strong>
+                    </td>
+
+                    <td>{{ res.email }}</td>
+
+                    <td>{{ res.phone }}</td>
+
+                    <td>
+                        <a href="{{ path('event_show', {id: res.event.id}) }}" target="_blank">
+                            <span class="badge" style="background: var(--primary-gradient);">
+                                {{ res.event.title }}
+                            </span>
+                        </a>
+                    </td>
+
+                    <td>
+                        <span style="font-weight:600;">
+                            {{ res.createdAt|date('d/m/Y') }}
+                        </span>
+                        <br>
+                        <small style="color: var(--gray-500);">
+                            {{ res.createdAt|date('H:i') }}
+                        </small>
+                    </td>
+
+                    <td class="actions-cell">
+                        <form method="post"
+                              action="{{ path('admin_reservation_delete', {id: res.id}) }}"
+                              onsubmit="return confirm('Supprimer cette réservation ?')">
+
+                            <input type="hidden" name="_token"
+                                   value="{{ csrf_token('delete-res-' ~ res.id) }}">
+
+                            <button type="submit" class="btn btn-small btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% endif %}
+</div>
+
+{% endblock %}
