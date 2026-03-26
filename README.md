@@ -19,6 +19,8 @@
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/84e5f499-90d2-42a7-bf16-8174f71ddb22" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d1a254aa-8385-40ae-bc18-e7d4de17c5fd" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8e522f24-10bc-4398-8ab2-18d78bd1bbdb" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/69c432f7-8ea5-4aba-a74f-c1e1c9b0ef98" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b3977f2e-bf48-4997-bbde-71896f5dff6e" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7a5b58cb-cb85-494d-80c2-df249a81cd55" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9a65941f-d935-4fff-a112-aa6d1d2fad9a" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f8ceb2c7-057a-4c9c-84ae-21e345d34c6b" />
@@ -49,6 +51,18 @@ It allows users to browse events and reserve seats, while administrators manage 
 - View and delete reservations per event or globally
 - CSRF protection on all destructive actions
 
+### 🔒 Security Enhancements
+- Login throttling (max attempts per minute) to prevent brute-force attacks
+- CSRF protection on authentication and critical actions
+- Duplicate reservation prevention (same email per event)
+- Remember Me authentication support
+
+### 📧 Email Confirmation
+- Automatic email confirmation after reservation
+- HTML email template with event details
+- Mailpit integration for local email testing (no real emails sent in dev)
+- Fail-safe email sending (reservation not blocked if email fails)
+
 ---
 
 ## 🧠 Architecture
@@ -76,6 +90,7 @@ Database (MariaDB)
 | Database   | MariaDB 10.4                      |
 | Frontend   | Twig + Custom CSS (MiniEvent UI)  |
 | Auth       | Symfony SecurityBundle            |
+| Mailer     | Symfony Mailer + Mailpit          |
 | Container  | Docker + Docker Compose           |
 | Versioning | Git & GitHub                      |
 
@@ -115,6 +130,15 @@ docker exec eventres_app php bin/console doctrine:fixtures:load --no-interaction
 
 Access: `http://localhost:8080`
 
+### 📬 Mailpit (Email Testing)
+
+Mailpit is included for development email testing.
+
+- Web UI: http://localhost:8025
+- SMTP: mailpit:1025
+
+All confirmation emails are captured here instead of being sent externally.
+
 ---
 
 ## 🔑 Default Credentials
@@ -133,6 +157,24 @@ Access: `http://localhost:8080`
 | Event       | title, description, date, location, seats, image |
 | Reservation | event_id, name, email, phone, created_at         |
 | User        | username, password (hashed), roles               |
+
+---
+
+## 🔐 Security & Email Flow
+
+### Reservation Flow
+1. User submits reservation form
+2. Backend validates:
+   - Event availability
+   - Event not in the past
+   - Duplicate reservation check
+3. Reservation is stored in database
+4. Confirmation email is generated and sent
+
+### Email System
+- Symfony Mailer handles email creation
+- Mailpit captures emails in development
+- Emails are sent synchronously (no queue) for reliability in dev
 
 ---
 
@@ -162,6 +204,8 @@ templates/
  │   ├── dashboard.html.twig
  │   ├── event/
  │   └── reservation/
+ ├── emails/
+ │   └── reservation_confirm.html.twig
  └── security/
      └── login.html.twig
 
@@ -206,8 +250,8 @@ feature/*    → development branches
 - [x] Image upload for events
 - [x] UI/UX redesign (MiniEvent design system)
 - [x] Docker setup (PHP 8.4 + Apache + MariaDB)
-- [ ] JWT integration
-- [ ] Passkeys (WebAuthn)
+- [x] Email confirmation system (Mailer + Mailpit)
+- [x] Security enhancements (throttling, CSRF, duplicate check)
 
 ---
 
