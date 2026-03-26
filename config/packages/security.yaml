@@ -1,11 +1,9 @@
 # config/packages/security.yaml
 security:
 
-    # Comment hasher les mots de passe
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-    # Comment Symfony charge un User depuis la BDD
     providers:
         app_user_provider:
             entity:
@@ -17,39 +15,35 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Firewall principal : tout le site
         main:
             lazy: true
             provider: app_user_provider
 
-            # Formulaire de login
             form_login:
                 login_path: app_login
                 check_path: app_login
                 default_target_path: event_index
                 username_parameter: username
                 password_parameter: password
-                enable_csrf: true
+                enable_csrf: true             # ← token CSRF automatique sur le login
 
+            # ── Protection brute-force : max 3 tentatives / minute par IP+login ──
             login_throttling:
                 max_attempts: 3
-                delay: 3600
+                interval: '1 minute'
 
             remember_me:
-                secret:   '%kernel.secret%'
-                lifetime: 604800 # 1 semaine en secondes
+                secret: '%kernel.secret%'
+                lifetime: 604800             # 7 jours
                 path: /
                 name: REMEMBER_ME
-                secure: false # Set to true if using HTTPS
+                secure: false               # passer à true en production (HTTPS)
                 httponly: true
 
-
-            # Logout
             logout:
                 path: app_logout
                 target: event_index
 
-    # Contrôle d'accès par URL
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/login, roles: PUBLIC_ACCESS }

@@ -120,6 +120,7 @@ class EventController extends AbstractController
         Environment $twig,
         Reservation $reservation
     ): void {
+        // dd('sendConfirmationEmail appelée', $reservation->getEmail());
         $htmlBody = $twig->render('emails/reservation_confirm.html.twig', [
             'reservation' => $reservation,
         ]);
@@ -130,11 +131,41 @@ class EventController extends AbstractController
             ->subject(sprintf('✅ Confirmation – %s', $reservation->getEvent()->getTitle()))
             ->html($htmlBody);
 
-        try {
+        // try {
+        //     $mailer->send($email);
+        // } catch (\Throwable $e) {
+        //     // Ne pas bloquer la réservation si l'envoi échoue
+        //     // (loguer en production)
+        // }
+        // dd($email);
             $mailer->send($email);
-        } catch (\Throwable $e) {
-            // Ne pas bloquer la réservation si l'envoi échoue
-            // (loguer en production)
-        }
     }
+// private function sendConfirmationEmail(
+//     MailerInterface $mailer,
+//     Environment $twig,
+//     Reservation $reservation
+// ): void {
+//     $email = (new Email())
+//         ->from('from@example.org')
+//         ->to('test@gmail.com')
+//         ->subject('Testing transport')
+//         ->text('Testing body');
+
+//     $mailer->send($email);
+// }
+    
+    // ---test mail-----------------------------------
+    #[Route('/test-mail', name: 'test_mail')]
+public function testMail(MailerInterface $mailer): Response
+{
+    $email = (new Email())
+        ->from('noreply@eventres.local')
+        ->to('test@example.com')
+        ->subject('Test Mailpit')
+        ->html('<h1>Mail de test</h1><p>Si vous voyez ceci, Mailpit fonctionne.</p>');
+
+    $mailer->send($email);
+
+    return new Response('Mail envoyé');
+}
 }
