@@ -29,6 +29,20 @@ security:
                 default_target_path: event_index
                 username_parameter: username
                 password_parameter: password
+                enable_csrf: true
+
+            login_throttling:
+                max_attempts: 3
+                delay: 3600
+
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 semaine en secondes
+                path: /
+                name: REMEMBER_ME
+                secure: false # Set to true if using HTTPS
+                httponly: true
+
 
             # Logout
             logout:
