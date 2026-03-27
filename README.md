@@ -9,23 +9,23 @@
 > A full-stack web application for managing event reservations, built with Symfony 6.4 and containerized with Docker.
 
 ---
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/aff0f065-5676-43be-95c3-38ed9300e75b" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5bc94572-709e-4ac3-ad7d-c4e5d18b41d7" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/03d70002-95ba-4be6-85cf-47f8cab51d90" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/935e79ed-862e-4da8-b2b1-df6653560e96" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b68331fb-fadd-4279-9f85-0d228db563bd" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/559ccc65-fea1-461f-b738-53559fd37303" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0e7f0ed0-7831-4e92-8f3a-d755260dd246" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/84e5f499-90d2-42a7-bf16-8174f71ddb22" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d1a254aa-8385-40ae-bc18-e7d4de17c5fd" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8e522f24-10bc-4398-8ab2-18d78bd1bbdb" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/69c432f7-8ea5-4aba-a74f-c1e1c9b0ef98" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b3977f2e-bf48-4997-bbde-71896f5dff6e" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7a5b58cb-cb85-494d-80c2-df249a81cd55" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9a65941f-d935-4fff-a112-aa6d1d2fad9a" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f8ceb2c7-057a-4c9c-84ae-21e345d34c6b" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/155075a3-232f-494e-a5db-218739d7be71" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0b7a4d49-c5d9-44c6-a102-50723fdbc15c" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e9f27874-a867-498f-ba77-6b7b2b7b3b9e" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4e545dd7-b57a-4eda-9cfb-911559850a1e" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb1183ad-20bf-4356-9c3e-e85172e4bf93" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ef60b9fe-4287-43dc-bf87-ed3fdca951cd" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4e3b343d-5fdf-4f59-9bc0-2fc76359323d" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/3df13f88-c9a6-4e4f-8e45-ab999e704629" />
+<img width="1917" height="799" alt="image" src="https://github.com/user-attachments/assets/b42b4359-20d4-40bb-a3d9-ef4bf83b188d" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1d0c7aa9-91f1-412e-ae33-2ae36e406b75" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/bd5137db-a527-4231-8e60-f3bd67356afe" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f31795f1-a580-428b-948a-08b70162e6c3" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1eeab6bc-93ac-4a54-8577-65eda445c2e7" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/74ad5192-5268-4b70-a15d-8f8a1e562b6d" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1bcd4e9c-ef02-4340-bfe1-2855d4ff8a68" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2865b73c-e519-4987-8e79-a7a2eb5e16de" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4162ded3-5419-4738-ae62-bcc7bf6867d7" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0c1054cf-e067-4f76-9678-ac8dcd13b15a" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/49cba950-483f-456e-9fdb-e7c5d2f9cf10" />
 
 ---
 ## 📌 Overview
