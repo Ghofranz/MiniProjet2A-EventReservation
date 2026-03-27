@@ -3,24 +3,28 @@
 {% block title %}Réservation confirmée{% endblock %}
 
 {% block body %}
-<section class="event-details-section">
-    <div class="container">
+<section class="min-h-[80vh] py-12 px-6 relative overflow-hidden">
+    <!-- Decorative background elements -->
+    <div class="absolute inset-0 bg-slate-900 z-0"></div>
 
-        <div class="breadcrumb">
-            <a href="{{ path('event_index') }}">
+    <div class="container relative z-10" style="max-width: 900px; margin: 0 auto;">
+
+        <div class="breadcrumb" style="margin-bottom: 2rem;">
+            <a href="{{ path('event_index') }}" style="color: #94a3b8; text-decoration: none;">
                 <i class="fas fa-arrow-left"></i> Retour aux événements
             </a>
         </div>
 
-        <div class="event-details-card" style="max-width: 900px; margin: 0 auto; overflow: hidden;">
+        <!-- ORIGINAL EVENT DETAILS CARD -->
+        <div class="event-details-card" style="max-width: 900px; margin: 0 auto; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); background-color: #ffffff;">
 
-            <div class="event-details-header" style="text-align:center;">
-                <h1>
-                    <i class="fas fa-circle-check"></i>
+            <div class="event-details-header" style="text-align:center; background-color: #ffffff; padding: 3rem 2rem;">
+                <h1 style="color: #1e293b; margin-bottom: 0; font-size: 2.5rem; line-height: 1rem;">
+                    <i class="fas fa-circle-check" style="color: #10b981;"></i>
                     Réservation confirmée !
                 </h1>
-                <p style="color: var(--gray-300); margin-top: 0.75rem; font-size: 1.05rem;">
-                    Merci <strong>{{ reservation.name }}</strong>, votre place a bien été enregistrée.
+                <p style="color: #64748b; margin-top: 1rem; font-size: 1.1rem; font-weight: 500;">
+                    Merci <strong style="color: #10b981;">{{ reservation.name }}</strong>, votre place a bien été enregistrée.
                 </p>
             </div>
 
@@ -69,14 +73,12 @@
                 </div>
 
                 <div class="reservation-form-section" style="text-align:center;">
-                    <h2>
-                        <i class="fas fa-check-circle"></i>
-                        Votre réservation est validée
-                    </h2>
+                    
                     <p class="form-subtitle" style="margin-bottom: 0;">
-                        Un email de confirmation pourra être envoyé à
+                    <i class="fas fa-check-circle"></i>
+                    Un e-mail de récapitulatif a été envoyé à
                         <strong>{{ reservation.email }}</strong>.
-                    </p>
+                    </p> 
                 </div>
 
                 <div class="form-actions" style="justify-content:center; margin-top: 2rem;">
