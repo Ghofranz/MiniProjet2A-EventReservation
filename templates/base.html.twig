@@ -1,6 +1,6 @@
 {# templates/base.html.twig #}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,32 +11,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/minievent.css') }}">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#0f172a',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     {% block stylesheets %}{% endblock %}
 
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}bg-slate-900 text-slate-200 font-sans flex flex-col min-h-screen selection:bg-blue-500/30{% endblock %}">
 
 {# ═══════════════════════════════════════════════
-   NAVBAR
+   NAVBAR (Glassmorphism layout)
    ═══════════════════════════════════════════════ #}
-<nav class="navbar" id="navbar">
-    <div class="container">
-        <a href="{{ path('event_index') }}" class="logo">
-            <i class="fas fa-calendar-alt"></i>
+<nav class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10 transition-all duration-300 shadow-[0_4px_30px_rgba(0,0,0,0.1)]" id="navbar">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="{{ path('event_index') }}" class="flex items-center gap-3 font-serif text-2xl font-bold text-white transition hover:scale-105">
+            <i class="fas fa-calendar-alt text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400"></i>
             <span>EventRes</span>
         </a>
 
-        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <button class="md:hidden text-2xl text-slate-300 hover:text-white transition" id="mobileMenuToggle" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
         </button>
 
-        <ul class="nav-menu" id="navMenu">
+        <ul class="hidden md:flex items-center gap-2" id="navMenu">
             <li>
                 <a href="{{ path('event_index') }}"
-                   class="{{ app.request.attributes.get('_route') == 'event_index' ? 'active' : '' }}">
+                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all {% if app.request.attributes.get('_route') == 'event_index' %}text-blue-400 bg-blue-500/10{% else %}text-slate-300 hover:text-blue-300 hover:bg-white/5{% endif %}">
                     <i class="fas fa-home"></i>
                     <span>Accueil</span>
                 </a>
@@ -46,14 +65,14 @@
                 {% if is_granted('ROLE_ADMIN') %}
                 <li>
                     <a href="{{ path('admin_dashboard') }}"
-                       class="{{ app.request.attributes.get('_route') starts with 'admin' ? 'active' : '' }}">
+                       class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all {% if app.request.attributes.get('_route') starts with 'admin' %}text-blue-400 bg-blue-500/10{% else %}text-slate-300 hover:text-blue-300 hover:bg-white/5{% endif %}">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 {% endif %}
                 <li>
-                    <a href="{{ path('app_logout') }}" class="logout-link">
+                    <a href="{{ path('app_logout') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Déconnexion ({{ app.user.username }})</span>
                     </a>
@@ -61,7 +80,7 @@
             {% else %}
                 <li>
                     <a href="{{ path('app_login') }}"
-                       class="{{ app.request.attributes.get('_route') == 'app_login' ? 'active' : '' }}">
+                       class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all {% if app.request.attributes.get('_route') == 'app_login' %}text-blue-400 bg-blue-500/10{% else %}text-slate-300 hover:text-blue-300 hover:bg-white/5{% endif %}">
                         <i class="fas fa-user-shield"></i>
                         <span>Admin</span>
                     </a>
@@ -76,10 +95,10 @@
    ═══════════════════════════════════════════════ #}
 {% for type, messages in app.flashes %}
     {% for message in messages %}
-        <div class="container">
-            <div class="alert alert-{{ type == 'success' ? 'success' : (type == 'error' ? 'error' : 'info') }}">
-                <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-circle' }}"></i>
-                <span>{{ message }}</span>
+        <div class="container mx-auto px-6 mt-6">
+            <div class="flex items-center gap-4 px-6 py-4 rounded-xl border {{ type == 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : (type == 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-blue-500/10 border-blue-500/20 text-blue-400') }} backdrop-blur-md shadow-lg animate-[slideDown_0.4s_ease-out]">
+                <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-circle' }} text-xl flex-shrink-0"></i>
+                <span class="font-medium">{{ message }}</span>
             </div>
         </div>
     {% endfor %}
@@ -88,43 +107,77 @@
 {# ═══════════════════════════════════════════════
    MAIN CONTENT
    ═══════════════════════════════════════════════ #}
-<main>
+<main class="flex-grow relative z-10 w-full overflow-x-hidden">
     {% block body %}{% endblock %}
 </main>
 
 {# ═══════════════════════════════════════════════
    FOOTER
    ═══════════════════════════════════════════════ #}
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3><i class="fas fa-calendar-alt"></i> EventRes</h3>
-                <p>Plateforme moderne de gestion et réservation d'événements.</p>
+<footer class="bg-slate-950 border-t border-white/5 py-12 text-slate-400 mt-20 relative z-20">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            <div class="space-y-4">
+                <h3 class="text-white font-serif text-2xl font-bold flex items-center gap-3 w-fit">
+                    <i class="fas fa-calendar-alt text-blue-400"></i> EventRes
+                </h3>
+                <p class="text-sm leading-relaxed max-w-sm">Plateforme moderne de gestion et réservation d'événements. Vivez des expériences inoubliables.</p>
             </div>
-            <div class="footer-links">
-                <ul>
-                    <li><a href="{{ path('event_index') }}"><i class="fas fa-home"></i> Accueil</a></li>
-                    {% if app.user and is_granted('ROLE_ADMIN') %}
-                    <li><a href="{{ path('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    {% else %}
-                    <li><a href="{{ path('app_login') }}"><i class="fas fa-user-shield"></i> Administration</a></li>
-                    {% endif %}
-                </ul>
+            <div class="space-y-4 flex flex-col md:items-center">
+                <div class="w-fit text-left">
+                    <h4 class="text-white font-semibold tracking-wider text-sm uppercase mb-4">Navigation</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ path('event_index') }}" class="hover:text-blue-400 transition flex items-center gap-2"><i class="fas fa-home w-4"></i> Accueil</a></li>
+                        {% if app.user and is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('admin_dashboard') }}" class="hover:text-blue-400 transition flex items-center gap-2"><i class="fas fa-tachometer-alt w-4"></i> Dashboard</a></li>
+                        {% else %}
+                        <li><a href="{{ path('app_login') }}" class="hover:text-blue-400 transition flex items-center gap-2"><i class="fas fa-user-shield w-4"></i> Administration</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
-            <div class="footer-info">
-                <p><i class="fas fa-university"></i> Université de Sousse</p>
-                <p><i class="fas fa-building"></i> ISSAT Sousse</p>
-                <p><i class="fas fa-users"></i> FIA2-GL</p>
+            <div class="space-y-4 flex flex-col md:items-end w-fit">
+                <div class="w-fit text-left">
+                    <h4 class="text-white font-semibold tracking-wider text-sm uppercase mb-4">Informations</h4>
+                    <div class="space-y-2 text-sm">
+                        <p class="flex items-center gap-2"><i class="fas fa-university w-4 text-slate-500"></i> Université de Sousse</p>
+                        <p class="flex items-center gap-2"><i class="fas fa-building w-4 text-slate-500"></i> ISSAT Sousse</p>
+                        <p class="flex items-center gap-2"><i class="fas fa-users w-4 text-slate-500"></i> FIA2-GL</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© {{ "now"|date("Y") }} EventRes </p>
+        <div class="pt-8 border-t border-white/10 text-center text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>© {{ "now"|date("Y") }} EventRes. Tous droits réservés.</p>
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fab fa-github"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+            </div>
         </div>
     </div>
 </footer>
 
 <script src="{{ asset('js/minievent.js') }}"></script>
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+<script>
+    // Global Mobile Menu Toggle
+    document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+        const menu = document.getElementById('navMenu');
+        menu.classList.toggle('hidden');
+        menu.classList.toggle('flex');
+        menu.classList.toggle('flex-col');
+        menu.classList.toggle('absolute');
+        menu.classList.toggle('top-full');
+        menu.classList.toggle('left-0');
+        menu.classList.toggle('w-full');
+        menu.classList.toggle('bg-slate-900/95');
+        menu.classList.toggle('backdrop-blur-xl');
+        menu.classList.toggle('p-6');
+        menu.classList.toggle('border-b');
+        menu.classList.toggle('border-white/10');
+    });
+</script>
+{% endblock %}
 </body>
 </html>

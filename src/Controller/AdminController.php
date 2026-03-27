@@ -31,35 +31,35 @@ class AdminController extends AbstractController
     //     ]);
     // }
     #[Route('/dashboard', name: 'admin_dashboard')]
-public function dashboard(
-    EventRepository $eventRepo,
-    ReservationRepository $reservationRepo
-): Response {
-    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    public function dashboard(
+        EventRepository $eventRepo,
+        ReservationRepository $reservationRepo
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-    $allEvents = $eventRepo->findBy([], ['date' => 'DESC']);
-    $latestEvents = array_slice($allEvents, 0, 100);
+        $allEvents = $eventRepo->findBy([], ['date' => 'DESC']);
+        $latestEvents = array_slice($allEvents, 0, 100);
 
-    $upcomingCount = 0;
-    $finishedCount = 0;
-    $now = new \DateTime();
+        $upcomingCount = 0;
+        $finishedCount = 0;
+        $now = new \DateTime();
 
-    foreach ($allEvents as $event) {
-        if ($event->getDate() && $event->getDate() > $now) {
-            $upcomingCount++;
-        } else {
-            $finishedCount++;
+        foreach ($allEvents as $event) {
+            if ($event->getDate() && $event->getDate() > $now) {
+                $upcomingCount++;
+            } else {
+                $finishedCount++;
+            }
         }
-    }
 
-    return $this->render('admin/dashboard.html.twig', [
-        'totalEvents'       => count($allEvents),
-        'totalReservations' => count($reservationRepo->findAll()),
-        'latestEvents'      => $latestEvents,
-        'upcomingCount'     => $upcomingCount,
-        'finishedCount'     => $finishedCount,
-    ]);
-}
+        return $this->render('admin/dashboard.html.twig', [
+            'totalEvents' => count($allEvents),
+            'totalReservations' => count($reservationRepo->findAll()),
+            'latestEvents' => $latestEvents,
+            'upcomingCount' => $upcomingCount,
+            'finishedCount' => $finishedCount,
+        ]);
+    }
 
     // ─── Liste des événements ────────────────────────────────────────────────
     #[Route('/events', name: 'admin_event_index')]
@@ -82,7 +82,7 @@ public function dashboard(
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $event = new Event();
-        $form  = $this->createForm(EventType::class, $event);
+        $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -90,8 +90,8 @@ public function dashboard(
             $imageFile = $form->get('imageFile')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename     = $slugger->slug($originalFilename);
-                $newFilename      = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
                 $imageFile->move(
                     $this->getParameter('kernel.project_dir') . '/public/uploads',
@@ -103,12 +103,12 @@ public function dashboard(
             $em->persist($event);
             $em->flush();
 
-            $this->addFlash('success', '✅ Événement créé avec succès !');
+            $this->addFlash('success', 'Événement créé avec succès !');
             return $this->redirectToRoute('admin_event_index');
         }
 
         return $this->render('admin/event/form.html.twig', [
-            'form'  => $form,
+            'form' => $form,
             'event' => $event,
             'title' => 'Nouvel événement',
         ]);
@@ -145,8 +145,8 @@ public function dashboard(
                 }
 
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename     = $slugger->slug($originalFilename);
-                $newFilename      = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
                 $imageFile->move(
                     $this->getParameter('kernel.project_dir') . '/public/uploads',
@@ -157,12 +157,12 @@ public function dashboard(
 
             $em->flush();
 
-            $this->addFlash('success', '✅ Événement modifié avec succès !');
+            $this->addFlash('success', 'Événement modifié avec succès !');
             return $this->redirectToRoute('admin_event_index');
         }
 
         return $this->render('admin/event/form.html.twig', [
-            'form'  => $form,
+            'form' => $form,
             'event' => $event,
             'title' => 'Modifier : ' . $event->getTitle(),
         ]);
@@ -194,7 +194,7 @@ public function dashboard(
             }
             $em->remove($event);
             $em->flush();
-            $this->addFlash('success', '🗑️ Événement supprimé.');
+            $this->addFlash('success', 'Événement supprimé.');
         }
 
         return $this->redirectToRoute('admin_event_index');
@@ -225,7 +225,7 @@ public function dashboard(
         if ($reservation && $this->isCsrfTokenValid('delete-res-' . $id, $request->request->get('_token'))) {
             $em->remove($reservation);
             $em->flush();
-            $this->addFlash('success', '🗑️ Réservation supprimée.');
+            $this->addFlash('success', 'Réservation supprimée.');
         }
 
         return $this->redirectToRoute('admin_reservation_index');

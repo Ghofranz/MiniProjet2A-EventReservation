@@ -1,104 +1,86 @@
-{# templates/admin/reservation/index.html.twig #}
 {% extends 'admin/base_admin.html.twig' %}
-{% block title %}Réservations{% endblock %}
+{% block title %}Réservations - EventRes{% endblock %}
+
 {% block admin_body %}
-
-<nav class="breadcrumb">
-    {# <a href="{{ path('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <span><i class="fas fa-chevron-right"></i></span>
-    <span>Réservations</span> #}
-</nav>
-
-<div class="dashboard-header">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
     <div>
-        <h1 style="font-size:1.65rem;padding:0;margin:0;display:flex;align-items:center;gap:0.5rem;"> 
-        Réservations</h1>
-        <p class="welcome-text">
-            Liste complète des réservations
-        </p>
+        <h1 class="text-3xl font-serif font-bold text-white mb-2 flex items-center gap-3">
+             <i class="fas fa-ticket-alt text-emerald-400"></i> Réservations
+        </h1>
+        <p class="text-slate-400">Liste complète de toutes les réservations enregistrées</p>
     </div>
 </div>
 
-<div class="dashboard-card">
-
-    <div class="card-header">
-        <h2><i class="fas fa-list"></i> Toutes les réservations</h2>
-        <span class="badge">{{ reservations|length }} réservation(s)</span>
+<div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <h2 class="text-xl font-serif font-bold text-slate-900 flex items-center gap-3">
+            <i class="fas fa-list text-emerald-600"></i> Toutes les réservations
+        </h2>
+        <span class="bg-white border border-slate-200 px-3 py-1 rounded-full text-xs font-bold text-slate-600 shadow-sm">{{ reservations|length }} réservation(s)</span>
     </div>
 
     {% if reservations is empty %}
-        <div class="no-data">
-            <i class="fas fa-ticket-alt"></i>
-            <h3>Aucune réservation</h3>
-            <p>Aucune réservation pour le moment</p>
+        <div class="p-16 text-center flex flex-col items-center">
+            <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-slate-400 text-4xl shadow-inner border border-slate-100">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <h3 class="text-2xl font-serif font-bold text-slate-900 mb-2">Aucune réservation</h3>
+            <p class="text-slate-500 max-w-sm font-medium">Vos événements n'ont pas encore reçu de réservations.</p>
         </div>
     {% else %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-white border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-bold">
+                        <th class="p-4 pl-6 w-16 text-center">#</th>
+                        <th class="p-4">Contact</th>
+                        <th class="p-4">Événement</th>
+                        <th class="p-4 text-center">Date Réservation</th>
+                        <th class="p-4 pr-6 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                    {% for reservation in reservations %}
+                        <tr class="hover:bg-slate-50 transition group">
+                            <td class="p-4 pl-6 text-center font-bold text-slate-600">
+                                #{{ reservation.id }}
+                            </td>
+                            <td class="p-4">
+                                <div class="font-bold text-slate-800 mb-1 flex items-center gap-2">
+                                    <i class="fas fa-user text-slate-400"></i> {{ reservation.name }}
+                                </div>
+                                <div class="text-xs text-slate-500 font-medium flex flex-col gap-1 mt-1">
+                                    <span class="flex items-center gap-1.5"><i class="fas fa-envelope w-3 flex-shrink-0 text-blue-500"></i> <span class="truncate max-w-[200px]">{{ reservation.email }}</span></span>
+                                    <span class="flex items-center gap-1.5"><i class="fas fa-phone w-3 flex-shrink-0 text-green-500"></i> {{ reservation.phone }}</span>
+                                </div>
+                            </td>
+                            <td class="p-4">
+                                <a href="{{ path('event_show', {id: reservation.event.id}) }}" target="_blank" class="inline-block bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm max-w-[200px] truncate" title="{{ reservation.event.title }}">
+                                    <i class="fas fa-link mr-1"></i> {{ reservation.event.title }}
+                                </a>
+                            </td>
+                            <td class="p-4 text-center">
+                                <span class="block text-slate-800 font-bold">{{ reservation.createdAt|date('d/m/Y') }}</span>
+                                <span class="text-xs text-slate-500 font-medium"><i class="fas fa-clock text-slate-400 mr-1"></i>{{ reservation.createdAt|date('H:i') }}</span>
+                            </td>
+                            <td class="actions-cell text-right pr-6">
+                                <form method="post"
+                                      action="{{ path('admin_reservation_delete', {id: reservation.id}) }}"
+                                      onsubmit="return confirm('Supprimer cette réservation ?')">
 
-    <div class="table-responsive">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Nom</th>
-                    <th>Email</th>
-                    <th>Téléphone</th>
-                    <th>Événement</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('delete-res-' ~ reservation.id) }}">
 
-            <tbody>
-                {% for res in reservations %}
-                <tr>
-                    <td><strong>#{{ res.id }}</strong></td>
-
-                    <td>
-                        <strong>{{ res.name }}</strong>
-                    </td>
-
-                    <td>{{ res.email }}</td>
-
-                    <td>{{ res.phone }}</td>
-
-                    <td>
-                        <a href="{{ path('event_show', {id: res.event.id}) }}" target="_blank">
-                            <span class="badge" style="background: var(--primary-gradient);">
-                                {{ res.event.title }}
-                            </span>
-                        </a>
-                    </td>
-
-                    <td>
-                        <span style="font-weight:600;">
-                            {{ res.createdAt|date('d/m/Y') }}
-                        </span>
-                        <br>
-                        <small style="color: var(--gray-500);">
-                            {{ res.createdAt|date('H:i') }}
-                        </small>
-                    </td>
-
-                    <td class="actions-cell">
-                        <form method="post"
-                              action="{{ path('admin_reservation_delete', {id: res.id}) }}"
-                              onsubmit="return confirm('Supprimer cette réservation ?')">
-
-                            <input type="hidden" name="_token"
-                                   value="{{ csrf_token('delete-res-' ~ res.id) }}">
-
-                            <button type="submit" class="btn btn-small btn-danger">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
+                                    <button type="submit" class="btn btn-small btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endif %}
 </div>
-
 {% endblock %}

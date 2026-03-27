@@ -31,13 +31,15 @@ class EventRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Event
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function searchByTerm(string $term): array
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.title LIKE :term')
+            ->orWhere('e.location LIKE :term')
+            ->orWhere('e.description LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
+            ->orderBy('e.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

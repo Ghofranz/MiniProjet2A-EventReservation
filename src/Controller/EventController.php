@@ -17,12 +17,18 @@ use Twig\Environment;
 
 class EventController extends AbstractController
 {
-    // ─── Liste de tous les événements ───────────────────────────────────────
     #[Route('/', name: 'event_index')]
-    public function index(EventRepository $repo): Response
+    public function index(EventRepository $repo, Request $request): Response
     {
+        $q = $request->query->get('q');
+        if ($q) {
+            $events = $repo->searchByTerm($q);
+        } else {
+            $events = $repo->findAll();
+        }
+
         return $this->render('event/index.html.twig', [
-            'events' => $repo->findAll(),
+            'events' => $events,
         ]);
     }
 

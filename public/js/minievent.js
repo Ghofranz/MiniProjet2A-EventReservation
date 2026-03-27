@@ -1,8 +1,8 @@
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('✨ MiniEvent loaded');
-    
+
     // Initialize modules
     initNavbar();
     initMobileMenu();
@@ -18,19 +18,19 @@ document.addEventListener('DOMContentLoaded', function() {
 function initNavbar() {
     const navbar = document.getElementById('navbar');
     if (!navbar) return;
-    
+
     let lastScroll = 0;
-    
+
     window.addEventListener('scroll', () => {
         const currentScroll = window.pageYOffset;
-        
+
         // Add shadow on scroll
         if (currentScroll > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
-        
+
         lastScroll = currentScroll;
     }, { passive: true });
 }
@@ -41,12 +41,12 @@ function initNavbar() {
 function initMobileMenu() {
     const toggle = document.getElementById('mobileMenuToggle');
     const menu = document.getElementById('navMenu');
-    
+
     if (!toggle || !menu) return;
-    
+
     toggle.addEventListener('click', () => {
         menu.classList.toggle('show');
-        
+
         // Toggle icon
         const icon = toggle.querySelector('i');
         if (icon) {
@@ -54,7 +54,7 @@ function initMobileMenu() {
             icon.classList.toggle('fa-times');
         }
     });
-    
+
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
         if (!toggle.contains(e.target) && !menu.contains(e.target)) {
@@ -66,7 +66,7 @@ function initMobileMenu() {
             }
         }
     });
-    
+
     // Close menu when clicking a link
     menu.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
@@ -83,63 +83,68 @@ function initMobileMenu() {
 /*
  Form validation and enhancements
  */
-function initForms() {
-    const forms = document.querySelectorAll('form');
-    
-    forms.forEach(form => {
-        const inputs = form.querySelectorAll('input, textarea, select');
-        
-        // Real-time validation
-        inputs.forEach(input => {
-            // Add focus animation
-            input.addEventListener('focus', function() {
-                this.parentElement.classList.add('focused');
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentElement.classList.remove('focused');
-                validateField(this);
-            });
-            
-            // Clear error on input
-            input.addEventListener('input', function() {
-                if (this.classList.contains('error')) {
-                    clearFieldError(this);
-                }
-            });
-        });
-        
-        // Form submission
-        form.addEventListener('submit', function(e) {
-            let isValid = true;
-            
-            inputs.forEach(input => {
-                if (!validateField(input)) {
-                    isValid = false;
-                }
-            });
-            
-            if (!isValid) {
-                e.preventDefault();
-                showNotification('Veuillez corriger les erreurs dans le formulaire', 'error');
-                
-                // Focus first error
-                const firstError = form.querySelector('.error');
-                if (firstError) {
-                    firstError.focus();
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            } else {
-                // Show loading state
-                const submitBtn = form.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Chargement...</span>';
-                }
-            }
-        });
-    });
-}
+// function initForms() {
+//     // const forms = document.querySelectorAll('form');
+//     // On sélectionne UNIQUEMENT les formulaires qui n'ont pas de confirmation native
+//     const forms = document.querySelectorAll('form:not([onsubmit*="confirm"])');
+
+//     forms.forEach(form => {
+//         const inputs = form.querySelectorAll('input, textarea, select');
+
+//         // Real-time validation
+//         inputs.forEach(input => {
+//             // Add focus animation
+//             input.addEventListener('focus', function () {
+//                 this.parentElement.classList.add('focused');
+//             });
+
+//             input.addEventListener('blur', function () {
+//                 this.parentElement.classList.remove('focused');
+//                 validateField(this);
+//             });
+
+//             // Clear error on input
+//             input.addEventListener('input', function () {
+//                 if (this.classList.contains('error')) {
+//                     clearFieldError(this);
+//                 }
+//             });
+//         });
+
+//         // Form submission
+//         form.addEventListener('submit', function (e) {
+
+//             let isValid = true;
+
+//             inputs.forEach(input => {
+//                 if (!validateField(input)) {
+//                     isValid = false;
+//                 }
+//             });
+
+//             if (!isValid) {
+//                 e.preventDefault();
+//                 showNotification('Veuillez corriger les erreurs dans le formulaire', 'error');
+
+//                 // Focus first error
+//                 const firstError = form.querySelector('.error');
+//                 if (firstError) {
+//                     firstError.focus();
+//                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+//                 }
+//             } else {
+//                 // Show loading state
+//                 const submitBtn = form.querySelector('button[type="submit"]');
+//                 if (submitBtn) {
+//                     /*submitBtn.disabled = true;*/
+//                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Chargement...</span>';
+//                 }
+//             }
+//         });
+//     });
+// }
+
+
 
 /*
   Validate a field
@@ -149,10 +154,10 @@ function validateField(field) {
         clearFieldError(field);
         return true;
     }
-    
+
     let isValid = true;
     let message = '';
-    
+
     // Required check
     if (field.required && !field.value.trim()) {
         isValid = false;
@@ -179,13 +184,13 @@ function validateField(field) {
         isValid = false;
         message = `Minimum ${field.minLength} caractères`;
     }
-    
+
     if (isValid) {
         clearFieldError(field);
     } else {
         showFieldError(field, message);
     }
-    
+
     return isValid;
 }
 
@@ -194,10 +199,10 @@ function validateField(field) {
  */
 function showFieldError(field, message) {
     clearFieldError(field);
-    
+
     field.classList.add('error');
     field.style.borderColor = 'var(--danger)';
-    
+
     const errorDiv = document.createElement('div');
     errorDiv.className = 'field-error-message';
     errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
@@ -210,7 +215,7 @@ function showFieldError(field, message) {
         gap: 0.4rem;
         animation: slideDown 0.3s ease;
     `;
-    
+
     field.parentNode.appendChild(errorDiv);
 }
 
@@ -220,7 +225,7 @@ function showFieldError(field, message) {
 function clearFieldError(field) {
     field.classList.remove('error');
     field.style.borderColor = '';
-    
+
     const error = field.parentNode.querySelector('.field-error-message');
     if (error) {
         error.remove();
@@ -232,7 +237,7 @@ function clearFieldError(field) {
  */
 function initAlerts() {
     const alerts = document.querySelectorAll('.alert');
-    
+
     alerts.forEach(alert => {
         // Auto dismiss after 5 seconds
         setTimeout(() => {
@@ -241,7 +246,7 @@ function initAlerts() {
                 setTimeout(() => alert.remove(), 400);
             }
         }, 5000);
-        
+
         // Click to dismiss
         alert.style.cursor = 'pointer';
         alert.addEventListener('click', () => {
@@ -256,9 +261,9 @@ Scroll animations for elements
  */
 function initScrollAnimations() {
     const animatedElements = document.querySelectorAll('.event-card, .stat-card, .info-card');
-    
+
     if (!animatedElements.length) return;
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
@@ -271,7 +276,7 @@ function initScrollAnimations() {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     });
-    
+
     animatedElements.forEach(el => {
         el.style.opacity = '0';
         observer.observe(el);
@@ -283,13 +288,13 @@ Card hover effects
  */
 function initCardEffects() {
     const cards = document.querySelectorAll('.event-card, .stat-card');
-    
+
     cards.forEach(card => {
-        card.addEventListener('mouseenter', function(e) {
+        card.addEventListener('mouseenter', function (e) {
             this.style.transform = 'translateY(-8px)';
         });
-        
-        card.addEventListener('mouseleave', function(e) {
+
+        card.addEventListener('mouseleave', function (e) {
             this.style.transform = '';
         });
     });
@@ -302,21 +307,21 @@ function showNotification(message, type = 'info') {
     // Remove existing
     const existing = document.querySelector('.notification-toast');
     if (existing) existing.remove();
-    
+
     const icons = {
         success: 'check-circle',
         error: 'exclamation-circle',
         warning: 'exclamation-triangle',
         info: 'info-circle'
     };
-    
+
     const notification = document.createElement('div');
     notification.className = 'notification-toast';
     notification.innerHTML = `
         <i class="fas fa-${icons[type] || icons.info}"></i>
         <span>${message}</span>
     `;
-    
+
     notification.style.cssText = `
         position: fixed;
         top: 100px;
@@ -334,9 +339,9 @@ function showNotification(message, type = 'info') {
         max-width: 400px;
         font-weight: 500;
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Auto remove
     setTimeout(() => {
         notification.style.animation = 'slideOutRight 0.4s ease forwards';

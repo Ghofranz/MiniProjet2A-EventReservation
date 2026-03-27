@@ -1,221 +1,127 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}{{ event.title }}{% endblock %}
+{% block title %}{{ event.title }} - EventRes{% endblock %}
 
 {% block body %}
+{% set isPast = event.date < date() %}
+{% set isFull = event.seats <= 0 %}
+{% set day = event.date|date('d') %}
+{% set month = event.date|date('M')|upper %}
 
-<section class="event-details-section">
-    <div class="container">
+<section class="max-w-6xl mx-auto px-6 py-12">
+    <!-- Breadcrumb -->
+    <a href="{{ path('event_index') }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition mb-8 group">
+        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Retour aux événements
+    </a>
 
-        <div class="breadcrumb">
-            <a href="{{ path('event_index') }}">
-                <i class="fas fa-arrow-left"></i> Retour
-            </a>
+    <!-- Top Hero Image -->
+    <div class="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-12 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 group bg-slate-800">
+        {% if event.image %}
+            <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+        {% else %}
+            <div class="w-full h-full flex items-center justify-center">
+                <i class="fas fa-calendar-alt text-6xl text-slate-600"></i>
+            </div>
+        {% endif %}
+        <!-- Gradient overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent pointer-events-none"></div>
+        
+        <!-- Badges -->
+        <div class="absolute top-6 left-6 flex gap-2 z-10">
+            {% if isPast %}
+                <div class="bg-slate-700/90 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-sm font-semibold text-white">Terminé</div>
+            {% elseif isFull %}
+                <div class="bg-red-500/90 backdrop-blur-md border border-red-500/30 px-4 py-2 rounded-full text-sm font-semibold text-white">Complet</div>
+            {% else %}
+                 <div class="bg-white/95 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-sm font-bold text-slate-800 shadow-lg">{{ event.seats }} places restantes</div>
+            {% endif %}
+        </div>
+        
+        <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12 z-10 pointer-events-none">
+            <h1 class="text-4xl md:text-6xl font-serif font-bold text-white mb-4 leading-tight drop-shadow-lg">{{ event.title }}</h1>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- Event Info Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition group">
+                    <i class="fas fa-map-marker-alt text-2xl text-blue-500 mb-3 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
+                    <h4 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-1">Lieu</h4>
+                    <p class="text-slate-800 font-bold">{{ event.location }}</p>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition group">
+                    <i class="fas fa-calendar-alt text-2xl text-blue-500 mb-3 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
+                    <h4 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-1">Date</h4>
+                    <p class="text-slate-800 font-bold">{{ event.date|date('d/m/Y à H:i') }}</p>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition group">
+                    <i class="fas fa-ticket-alt text-2xl text-blue-500 mb-3 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
+                    <h4 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-1">Disponibilité</h4>
+                    <p class="text-slate-800 font-bold text-2xl">{{ event.seats }} <span class="text-sm text-slate-500 font-medium">places</span></p>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-xl">
+                 <h2 class="text-2xl font-serif font-bold text-slate-900 mb-6 flex items-center gap-3">
+                     <i class="fas fa-align-left text-blue-500"></i> Description
+                 </h2>
+                 <div class="text-slate-600 leading-relaxed space-y-4">
+                     {{ event.description|nl2br }}
+                 </div>
+            </div>
         </div>
 
-        <div class="row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
-
-            {# ================= LEFT ================= #}
-            <div class="event-details-card">
-
-    {% if event.image %}
-    <div class="event-main-image event-main-image-framed">
-        <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}">
-    </div>
-    {% endif %}
-
-    <div class="event-details-body">
-        <h1 style="margin-bottom:1rem;">{{ event.title }}</h1>
-            {# <div class="event-details-card">
-
-                {% if event.image %}
-                <div class="event-main-image" style="margin:0;">
-                    <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}">
+        <!-- Sidebar / Reservation Form -->
+        <div class="lg:col-span-1">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-2xl">
+                <div class="p-8 border-b border-slate-100 bg-slate-50">
+                    <h2 class="text-2xl font-serif font-bold text-slate-900 text-center">Réserver ma place</h2>
                 </div>
-                {% endif %}
-
-                <div class="event-details-body">
-
-                    <h1 style="margin-bottom:1rem;">{{ event.title }}</h1> #}
-
-                    <div class="event-info-grid">
-
-                        <div class="info-card">
-                            <div class="info-card-icon">
-                                <i class="fas fa-map-marker-alt"></i>
+                <div class="p-8 bg-white">
+                    {% if not isPast and not isFull %}
+                        {{ form_start(reservationForm, {'attr': {'class': 'space-y-6'}}) }}
+                            
+                            <div class="space-y-2 relative">
+                                <label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i class="fas fa-user text-blue-500"></i> Nom complet</label>
+                                {{ form_widget(reservationForm.name, {'attr': {'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner placeholder-slate-400'}}) }}
+                                <div class="text-red-500 text-xs mt-1">{{ form_errors(reservationForm.name) }}</div>
                             </div>
-                            <div class="info-card-content">
-                                <h4>Lieu</h4>
-                                <p>{{ event.location }}</p>
+
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i class="fas fa-envelope text-blue-500"></i> Email</label>
+                                {{ form_widget(reservationForm.email, {'attr': {'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner placeholder-slate-400'}}) }}
+                                <div class="text-red-500 text-xs mt-1">{{ form_errors(reservationForm.email) }}</div>
                             </div>
-                        </div>
 
-                        <div class="info-card">
-                            <div class="info-card-icon">
-                                <i class="fas fa-calendar-alt"></i>
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i class="fas fa-phone text-blue-500"></i> Téléphone</label>
+                                {{ form_widget(reservationForm.phone, {'attr': {'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner placeholder-slate-400'}}) }}
+                                <div class="text-red-500 text-xs mt-1">{{ form_errors(reservationForm.phone) }}</div>
                             </div>
-                            <div class="info-card-content">
-                                <h4>Date</h4>
-                                <p>{{ event.date|date('d/m/Y à H:i') }}</p>
-                            </div>
-                        </div>
 
-                        <div class="info-card">
-                            <div class="info-card-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="info-card-content">
-                                <h4>Places disponibles</h4>
-                                <p>
-                                    <span class="badge">
-                                        {{ event.seats }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="event-description-section">
-                        <h2><i class="fas fa-align-left"></i> Description</h2>
-                        <div class="description-content">
-                            {{ event.description|nl2br }}
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            {# ================= RIGHT ================= #}
-            <div class="event-details-card reservation-card" style="height: fit-content;">
-
-    <div class="reservation-card-header">
-        <h2 style="color: #000000; font-size:1.8rem;padding: 1.75rem 1.5rem;margin-top: 1rem;">
-            
-            Réserver ma place
-        </h2>
-    </div>
-
-    <div class="event-details-body">
-
-        {# {% if event.seats > 0 %} #}
-{% if not isPast and not isFull %}
-            {{ form_start(reservationForm) }}
-
-            <div class="form-group">
-                <label>
-                    <i class="fas fa-user"></i> Nom complet
-                </label>
-                {{ form_widget(reservationForm.name) }}
-                {{ form_errors(reservationForm.name) }}
-            </div>
-
-            <div class="form-group">
-                <label>
-                    <i class="fas fa-envelope"></i> Email
-                </label>
-                {{ form_widget(reservationForm.email) }}
-                {{ form_errors(reservationForm.email) }}
-            </div>
-
-            <div class="form-group">
-                <label>
-                    <i class="fas fa-phone"></i> Téléphone
-                </label>
-                {{ form_widget(reservationForm.phone) }}
-                {{ form_errors(reservationForm.phone) }}
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-dark-blue btn-lg btn-block">
-                    <i class="fas fa-check"></i>
-                    <span>Confirmer ma réservation</span>
-                </button>
-            </div>
-{# {{ form_end(reservationForm, { render_rest: false }) }} #}
-           <div style="display: none;"> {{ form_end(reservationForm) }} 
-</div>
-        {# {% else %}
-            <div class="alert alert-error">
-                <i class="fas fa-circle-exclamation"></i>
-                <span>Événement complet</span>
-            </div>
-        {% endif %} #}
-        {% elseif isPast %}
-    <div class="alert alert-error">
-        <i class="fas fa-clock"></i>
-        <span>Les réservations sont fermées : cet événement est déjà passé.</span>
-    </div>
-{% elseif isFull %}
-    <div class="alert alert-error">
-        <i class="fas fa-circle-exclamation"></i>
-        <span>Événement complet : il n’y a plus de places disponibles.</span>
-    </div>
-{% endif %}
-
-    </div>
-</div>
-            {# <div class="event-details-card" style="height: fit-content;">
-
-                <div class="event-details-header" style="background: white; padding:1.5rem;">
-                    <h2 style="color: #000000; font-size:1.8rem;">
-                       
-                        Réserver ma place
-                    </h2>
-                </div>
-
-                <div class="event-details-body">
-
-                    {% if event.seats > 0 %}
-
-                        {{ form_start(reservationForm) }}
-
-                        <div class="form-group">
-                            <label>
-                                <i class="fas fa-user"></i> Nom complet
-                            </label>
-                            {{ form_widget(reservationForm.name) }}
-                            {{ form_errors(reservationForm.name) }}
-                        </div>
-
-                        <div class="form-group">
-                            <label>
-                                <i class="fas fa-envelope"></i> Email
-                            </label>
-                            {{ form_widget(reservationForm.email) }}
-                            {{ form_errors(reservationForm.email) }}
-                        </div>
-
-                        <div class="form-group">
-                            <label>
-                                <i class="fas fa-phone"></i> Téléphone
-                            </label>
-                            {{ form_widget(reservationForm.phone) }}
-                            {{ form_errors(reservationForm.phone) }}
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-dark-blue btn-lg btn-block">
-                                <i class="fas fa-check"></i>
-                                <span>Confirmer ma réservation</span>
+                            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-4 px-6 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.3)] transition transform hover:-translate-y-1 flex justify-center items-center gap-2 mt-4 text-lg border border-blue-400/50">
+                                <i class="fas fa-check"></i> Confirmer
                             </button>
+                            
+                            <div style="display: none;">{{ form_end(reservationForm) }}</div>
+                    {% elseif isPast %}
+                        <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-inner gap-3">
+                            <i class="fas fa-clock text-4xl mb-2 text-red-400"></i>
+                            <span class="font-bold">Les réservations sont fermées : cet événement est terminé.</span>
                         </div>
-
-                        {{ form_end(reservationForm) }}
-
-                    {% else %}
-                        <div class="alert alert-error">
-                            <i class="fas fa-circle-exclamation"></i>
-                            <span>Événement complet</span>
+                    {% elseif isFull %}
+                        <div class="bg-orange-50 border border-orange-200 text-orange-600 rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-inner gap-3">
+                            <i class="fas fa-exclamation-circle text-4xl mb-2 text-orange-400"></i>
+                            <span class="font-bold">Événement complet. Plus aucune place disponible.</span>
                         </div>
                     {% endif %}
-
                 </div>
-            </div> #}
-
+            </div>
         </div>
-
     </div>
 </section>
-
 {% endblock %}

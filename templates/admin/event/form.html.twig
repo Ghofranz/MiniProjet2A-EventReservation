@@ -1,108 +1,118 @@
 {% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}{{ event.id ? ' Modifier' : ' Créer' }} un événement - EventRes{% endblock %}
+{% block title %}{{ event.id ? 'Modifier' : 'Créer' }} un événement - EventRes{% endblock %}
 
 {% block admin_body %}
-<nav class="breadcrumb">
-    {# <a href="{{ path('admin_dashboard') }}" style="padding: 0.5rem 0.5rem;"> Dashboard</a>
-    {# <span><i class="fas fa-chevron-right"></i></span>
-    {# <a href="{{ path('admin_event_index') }}">Événements</a> #}
-    {# <span><i class="fas fa-chevron-right"></i></span>
-    <span style="text-decoration: underline;">{{ event.id ? 'Modifier' : 'Créer' }} Événement</span>  #} 
-</nav>
-
-<div class="event-details-card">
-    <div >
-        <h1 style="font-size: 1.65; margin-left: 1.5em;margin-top: 0.5em;">
-            
-            {{ event.id ? ' Modifier un événement' : 'Créer un événement' }}
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div>
+        <h1 class="text-3xl font-serif font-bold text-white mb-2 flex items-center gap-3">
+             <i class="fas {{ event.id ? 'fa-edit' : 'fa-plus-circle' }} text-blue-400"></i> {{ event.id ? 'Modifier un événement' : 'Créer un événement' }}
         </h1>
+        <p class="text-slate-400">Remplissez les informations ci-dessous pour publier ou mettre à jour un événement.</p>
+    </div>
+    <a href="{{ path('admin_event_index') }}" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-6 rounded-xl transition transform hover:-translate-y-1 flex items-center gap-2 shadow-sm">
+        <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+</div>
+
+<div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-2xl max-w-4xl">
+    <div class="p-8 border-b border-slate-100 bg-slate-50">
+        <h2 class="text-xl font-serif font-bold text-slate-900 flex items-center gap-3">
+            <i class="fas fa-file-signature text-blue-600"></i> {{ event.id ? 'Informations de l\'événement' : 'Nouvel événement' }}
+        </h2>
     </div>
 
-    <div class="event-details-body">
-        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'id': 'eventForm'}}) }}
+    <div class="p-8 bg-white">
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'id': 'eventForm', 'class': 'space-y-6'}}) }}
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="{{ form.title.vars.id }}">
-                    <i class="fas fa-heading"></i> Titre
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2 relative">
+                <label for="{{ form.title.vars.id }}" class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-heading text-blue-500 w-4 text-center"></i> Titre
                 </label>
-                {{ form_widget(form.title, {'attr': {'placeholder': 'Ex: Tech Summit 2027'}}) }}
-                {{ form_errors(form.title) }}
+                {{ form_widget(form.title, {'attr': {'placeholder': 'Ex: Tech Summit 2027', 'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner placeholder-slate-400 font-medium'}}) }}
+                <div class="text-red-500 text-xs mt-1 font-medium">{{ form_errors(form.title) }}</div>
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.seats.vars.id }}">
-                    <i class="fas fa-users"></i> Places
+            <div class="space-y-2 relative">
+                <label for="{{ form.seats.vars.id }}" class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-users text-blue-500 w-4 text-center"></i> Places
                 </label>
-                {{ form_widget(form.seats, {'attr': {'min': 1, 'placeholder': 'Ex: 200'}}) }}
-                {{ form_errors(form.seats) }}
+                {{ form_widget(form.seats, {'attr': {'min': 1, 'placeholder': 'Ex: 200', 'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner placeholder-slate-400 font-medium'}}) }}
+                <div class="text-red-500 text-xs mt-1 font-medium">{{ form_errors(form.seats) }}</div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="{{ form.description.vars.id }}">
-                <i class="fas fa-align-left"></i> Description
+        <div class="space-y-2 relative">
+            <label for="{{ form.description.vars.id }}" class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                <i class="fas fa-align-left text-blue-500 w-4 text-center"></i> Description
             </label>
-            {{ form_widget(form.description, {'attr': {'rows': 5, 'placeholder': 'Décrivez votre événement...'}}) }}
-            {{ form_errors(form.description) }}
+            {{ form_widget(form.description, {'attr': {'rows': 5, 'placeholder': 'Décrivez votre événement...', 'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner placeholder-slate-400 font-medium'}}) }}
+            <div class="text-red-500 text-xs mt-1 font-medium">{{ form_errors(form.description) }}</div>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="{{ form.date.vars.id }}">
-                    <i class="fas fa-calendar-alt"></i> Date & Heure
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2 relative">
+                <label for="{{ form.date.vars.id }}" class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-calendar-alt text-blue-500 w-4 text-center"></i> Date & Heure
                 </label>
-                {{ form_widget(form.date) }}
-                {{ form_errors(form.date) }}
+                {{ form_widget(form.date, {'attr': {'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner font-medium text-[color-scheme:light]'}}) }}
+                <div class="text-red-500 text-xs mt-1 font-medium">{{ form_errors(form.date) }}</div>
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.location.vars.id }}">
-                    <i class="fas fa-map-marker-alt"></i> Lieu
+            <div class="space-y-2 relative">
+                <label for="{{ form.location.vars.id }}" class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-blue-500 w-4 text-center"></i> Lieu
                 </label>
-                {{ form_widget(form.location, {'attr': {'placeholder': 'Ex: Tunis, Palais des Congrès'}}) }}
-                {{ form_errors(form.location) }}
+                {{ form_widget(form.location, {'attr': {'placeholder': 'Ex: Tunis, Palais des Congrès', 'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-inner placeholder-slate-400 font-medium'}}) }}
+                <div class="text-red-500 text-xs mt-1 font-medium">{{ form_errors(form.location) }}</div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="{{ form.imageFile.vars.id }}">
-                <i class="fas fa-image"></i> Image
+        <div class="space-y-4 pt-4 border-t border-slate-100">
+            <label for="{{ form.imageFile.vars.id }}" class="block text-sm font-bold text-slate-700 mb-2">
+                <i class="fas fa-image text-blue-500 w-4 text-center mr-1"></i> Image de couverture
             </label>
 
-            <label class="custom-file" for="{{ form.imageFile.vars.id }}">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <span id="file-label-text">Cliquez pour sélectionner une image</span>
+            <label class="w-full flex flex-col items-center justify-center border-2 border-dashed border-blue-200 bg-blue-50/50 rounded-2xl p-8 hover:bg-blue-50 hover:border-blue-400 transition cursor-pointer group" for="{{ form.imageFile.vars.id }}">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-blue-500 text-2xl mb-4 group-hover:scale-110 transition shadow-sm border border-blue-100">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <span id="file-label-text" class="text-slate-700 font-bold">Cliquez pour sélectionner une image</span>
+                <span class="text-slate-500 text-xs mt-2 font-medium">Formats supportés: JPG, PNG, WEBP (Max: 5MB)</span>
             </label>
 
-            <div style="display:none;">
-                {{ form_widget(form.imageFile, {'attr': {'onchange': 'updateFileName(this)'}}) }}
+            <div class="hidden">
+                {{ form_widget(form.imageFile, {'attr': {'onchange': 'updateFileName(this)', 'class': 'hidden'}}) }}
             </div>
 
-            <span class="field-hint">JPG, PNG, GIF, WEBP — max 5MB</span>
-            {{ form_errors(form.imageFile) }}
+            <div class="text-red-500 text-xs mt-1 font-medium">{{ form_errors(form.imageFile) }}</div>
 
             {% if event.image %}
-                <div class="current-image mt-2">
-                    <p>Image actuelle :</p>
-                    <img src="{{ asset('uploads/' ~ event.image) }}" alt="Image actuelle" style="height:80px;border-radius:6px;">
+                <div class="mt-6 bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-center gap-4 shadow-sm">
+                    <div class="w-20 h-20 rounded-lg overflow-hidden border border-slate-200 flex-shrink-0 bg-white">
+                        <img src="{{ asset('uploads/' ~ event.image) }}" alt="Image actuelle" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800 mb-1">Image actuelle</p>
+                        <p class="text-xs text-slate-500 truncate max-w-[200px] font-medium">{{ event.image }}</p>
+                    </div>
                 </div>
             {% endif %}
         </div>
 
-        <div class="form-actions">
+        <div class="flex flex-col sm:flex-row gap-4 pt-8 mt-4">
             {{ form_widget(form.submit, {
-                'label': event.id ? 'Mettre à jour' : 'Enregistrer',
-                'attr': {'class': 'btn btn-primary btn-lg'}
+                'label': event.id ? 'Mettre à jour l\'événement' : 'Créer l\'événement',
+                'attr': {'class': 'flex-1 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-4 px-6 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.3)] transition transform hover:-translate-y-1 flex items-center justify-center gap-2 cursor-pointer border border-blue-400/50'}
             }) }}
 
-            <a href="{{ path('admin_event_index') }}" class="btn btn-secondary btn-lg">
+            <a href="{{ path('admin_event_index') }}" class="sm:w-1/3 bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-700 font-bold py-4 px-6 rounded-xl transition transform hover:-translate-y-1 flex items-center justify-center gap-2 text-center shadow-sm">
                 Annuler
             </a>
         </div>
 
-        {{ form_end(form) }}
+        <div style="display:none;">{{ form_end(form) }}</div>
     </div>
 </div>
 
@@ -111,8 +121,10 @@ function updateFileName(input) {
     const label = document.getElementById('file-label-text');
     if (input.files && input.files.length > 0) {
         label.textContent = input.files[0].name;
+        label.classList.add('text-blue-600');
     } else {
         label.textContent = 'Cliquez pour sélectionner une image';
+        label.classList.remove('text-blue-600');
     }
 }
 </script>

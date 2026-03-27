@@ -3,128 +3,125 @@
 {% block title %}Tableau de bord - EventRes{% endblock %}
 
 {% block admin_body %}
-<div class="dashboard-header">
+<!-- Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
     <div>
-        <p style="font-size:1.2rem;font-family: 'Playfair Display', Georgia, serif; color: var(--gray-110);">
-            Bienvenue, <strong>{{ app.user.userIdentifier }}</strong> 👋
-        </p>
+        <h1 class="text-3xl font-serif font-bold text-white mb-2">Tableau de bord</h1>
+        <p class="text-slate-400">Bienvenue, <strong class="text-blue-400">{{ app.user.userIdentifier }}</strong> 👋 Voici un récapitulatif de votre plateforme.</p>
     </div>
-    <a href="{{ path('admin_event_new') }}" class="btn btn-primary">
-        <i class="fas fa-plus-circle"></i>
-        <span>Nouvel événement</span>
+    <a href="{{ path('admin_event_new') }}" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold py-3 px-6 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.3)] transition transform hover:-translate-y-1 flex items-center gap-2 border border-blue-400/50">
+        <i class="fas fa-plus-circle"></i> Nouvel événement
     </a>
 </div>
 
-<div class="stats-grid">
-    {# <div class="stat-card">
-        <div class="stat-icon bg-primary">
-            <i class="fas fa-calendar-alt"></i>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <!-- Stat 1 -->
+    <a href="{{ path('admin_event_index') }}" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300 group block relative flex flex-col justify-between h-[140px]">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Événements</p>
+                <h3 class="text-4xl font-bold text-slate-800">{{ totalEvents }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl shadow-inner border border-blue-100 group-hover:scale-110 transition">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
         </div>
-        <div class="stat-info">
-            <h3>{{ totalEvents }}</h3>
-            <p>Événements</p>
-        </div>
-    </div> #}
-    <a href="{{ path('admin_event_index') }}" class="stat-card stat-card-link">
-    <div class="stat-icon bg-primary">
-        <i class="fas fa-calendar-alt"></i>
-    </div>
-    <div class="stat-info">
-        <h3>{{ totalEvents }}</h3>
-        <p>Événements</p>
-    </div>
-</a>
+    </a>
 
-    {# <div class="stat-card">
-        <div class="stat-icon bg-success">
-            <i class="fas fa-ticket-alt"></i>
+    <!-- Stat 2 -->
+    <a href="{{ path('admin_reservation_index') }}" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300 group block relative flex flex-col justify-between h-[140px]">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Réservations</p>
+                <h3 class="text-4xl font-bold text-slate-800">{{ totalReservations }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl shadow-inner border border-emerald-100 group-hover:scale-110 transition">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
         </div>
-        <div class="stat-info">
-            <h3>{{ totalReservations }}</h3>
-            <p>Réservations</p>
-        </div>
-    </div> #}
-    <a href="{{ path('admin_reservation_index') }}" class="stat-card stat-card-link">
-    <div class="stat-icon bg-success">
-        <i class="fas fa-ticket-alt"></i>
-    </div>
-    <div class="stat-info">
-        <h3>{{ totalReservations }}</h3>
-        <p>Réservations</p>
-    </div>
-</a>
+    </a>
 
-    <div class="stat-card">
-        <div class="stat-icon bg-info">
-            <i class="fas fa-calendar-check"></i>
-        </div>
-        <div class="stat-info">
-            {% set upcomingCount = 0 %}
-            {% for event in latestEvents %}
-                {% if event.date and event.date > date() %}
-                    {% set upcomingCount = upcomingCount + 1 %}
-                {% endif %}
-            {% endfor %}
-            <h3>{{ upcomingCount }}</h3>
-            <p>À venir</p>
+    <!-- Stat 3 -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-lg relative flex flex-col justify-between h-[140px]">
+        <div class="flex justify-between items-start">
+            <div>
+                {% set upcomingCount = 0 %}
+                {% for event in latestEvents %}
+                    {% if event.date and event.date > date() %}
+                        {% set upcomingCount = upcomingCount + 1 %}
+                    {% endif %}
+                {% endfor %}
+                <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">À venir</p>
+                <h3 class="text-4xl font-bold text-slate-800">{{ upcomingCount }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl shadow-inner border border-purple-100">
+                <i class="fas fa-calendar-check"></i>
+            </div>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon bg-warning">
-            <i class="fas fa-clock"></i>
-        </div>
-        <div class="stat-info">
-            <h3>{{ latestEvents|length - upcomingCount }}</h3>
-            <p>Terminés</p>
+    <!-- Stat 4 -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-lg relative flex flex-col justify-between h-[140px]">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Terminés</p>
+                <h3 class="text-4xl font-bold text-slate-800">{{ latestEvents|length - upcomingCount }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl shadow-inner border border-amber-100">
+                <i class="fas fa-clock"></i>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="dashboard-card">
-    <div class="card-header">
-        <h2><i class="fas fa-list"></i> Événements récents</h2>
-        <span class="badge">{{ latestEvents|length }} événement(s)</span>
+<!-- Table Section -->
+<div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <h2 class="text-xl font-serif font-bold text-slate-900 flex items-center gap-3">
+            <i class="fas fa-list text-blue-600"></i> Événements récents
+        </h2>
+        <span class="bg-white border border-slate-200 px-3 py-1 rounded-full text-xs font-bold text-slate-600 shadow-sm">{{ latestEvents|length }} événement(s)</span>
     </div>
 
     {% if latestEvents is empty %}
-        <div class="no-data">
-            <i class="fas fa-calendar-plus"></i>
-            <h3>Aucun événement</h3>
-            <p>Commencez par créer votre premier événement</p>
-            <a href="{{ path('admin_event_new') }}" class="btn btn-primary" style="margin-top: 1rem;">
-                <i class="fas fa-plus"></i>
-                <span>Créer un événement</span>
+        <div class="p-12 text-center flex flex-col items-center">
+            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-400 text-3xl shadow-inner border border-slate-100">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Aucun événement</h3>
+            <p class="text-slate-500 mb-6 font-medium">Commencez par créer votre premier événement pour remplir ce tableau.</p>
+            <a href="{{ path('admin_event_new') }}" class="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-bold py-2 px-6 rounded-xl transition shadow-sm">
+                <i class="fas fa-plus"></i> Créer un événement
             </a>
         </div>
     {% else %}
-        <div class="table-responsive">
-            <table class="data-table">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr>
-                        <th>Titre</th>
-                        <th>Date</th>
-                        <th>Lieu</th>
-                        <th>Places</th>
-                        <th>Actions</th>
+                    <tr class="bg-white border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-bold">
+                        <th class="p-4 pl-6">Titre</th>
+                        <th class="p-4">Date</th>
+                        <th class="p-4">Lieu</th>
+                        <th class="p-4 text-center">Places</th>
+                        <th class="p-4 pr-6 text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-100 text-sm">
                     {% for event in latestEvents %}
-                        <tr>
-                            <td><strong>{{ event.title }}</strong></td>
-                            <td>{{ event.date|date('d/m/Y') }}</td>
-                            <td>{{ event.location }}</td>
-                            <td>
-                                <span class="badge">{{ event.seats }}</span>
+                        <tr class="hover:bg-slate-50 transition group">
+                            <td class="p-4 pl-6 font-bold text-slate-800">{{ event.title }}</td>
+                            <td class="p-4 text-slate-600 font-medium">{{ event.date|date('d/m/Y') }}</td>
+                            <td class="p-4 text-slate-600 text-xs">
+                                <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt text-blue-500"></i> {{ event.location }}</span>
                             </td>
-                            <td class="actions-cell">
-                                <div class="action-buttons">
-                                    <a href="{{ path('admin_event_edit', {id: event.id}) }}"
-                                       class="btn btn-small btn-info" title="Modifier">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                </div>
+                            <td class="p-4 text-center">
+                                <span class="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-700 border border-slate-200 inline-block shadow-sm">{{ event.seats }}</span>
+                            </td>
+                            <td class="p-4 pr-6 text-right">
+                                <a href="{{ path('admin_event_edit', {id: event.id}) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition shadow-sm border border-blue-100 hover:border-blue-600" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -1,125 +1,287 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Événements{% endblock %}
+{% block title %}Événements - EventRes{% endblock %}
+
+{% block body_class %}dark-homepage bg-slate-900 text-slate-200 font-sans{% endblock %}
+
+{% block stylesheets %}{% endblock %}
 
 {% block body %}
-<section class="hero">
-    <div class="container">
-    <p style="font-size:12px; text-align:center; 
-            padding:10px;  
-            letter-spacing:1px;">
-  +17k lieux disponibles · Déjà choisis par +1M de participants
-</p>
-
-        <h1><i class="fas fa-calendar-alt"></i> Nos Événements</h1>
-        <p style="color: var(--gray-100);">Découvrez une sélection d'événements exceptionnels et réservez votre place en quelques clics</p>
-     </div>
-    <div class="hero-decoration" style="width:300px;height:300px;top:-100px;left:-100px;"></div>
-    <div class="hero-decoration" style="width:200px;height:200px;bottom:-50px;right:10%;animation-delay:2s;"></div>
+<!-- ═══════════════════════════════════════════════
+     HERO SECTION
+     ═══════════════════════════════════════════════ -->
+<section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+    <!-- Mesh Gradient Backgrounds -->
+    <div class="absolute inset-0 bg-slate-900 z-0"></div>
+    <div class="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-600/20 blur-[100px] animate-slow-pan z-0"></div>
+    <div class="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-teal-500/20 blur-[120px] animate-slow-pan z-0" style="animation-delay: -5s;"></div>
+    <div class="absolute top-[30%] right-[20%] w-[300px] h-[300px] rounded-full bg-indigo-500/20 blur-[80px] animate-slow-pan z-0" style="animation-delay: -2s;"></div>
+    
+    <!-- Hero Content -->
+    <div class="container relative z-10 mx-auto px-6 text-center">
+        <div class="inline-block mb-6 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-sm font-medium text-slate-300">
+            <span class="text-blue-400"></span> +17k lieux disponibles · Déjà choisis par +1M de participants
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight drop-shadow-lg">
+            Vivez l'instant, <br/>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">réservez l'exception.</span>
+        </h1>
+        
+        <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-12">
+            Découvrez une sélection d'événements exclusifs et réservez votre place en une fraction de seconde.
+        </p>
+        
+        <!-- Glassmorphism Search Bar -->
+        <form id="search-form" action="{{ path('event_index') }}" method="GET" class="max-w-3xl mx-auto bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-2xl shadow-2xl flex flex-col sm:flex-row gap-2">
+            <div class="flex-1 flex items-center bg-white rounded-xl px-4 py-3 border border-slate-200 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 group shadow-inner">
+                <i class="fas fa-search text-slate-400 mr-3 group-focus-within:text-blue-500 transition-colors"></i>
+                <input id="search-input" type="text" name="q" value="{{ app.request.query.get('q') }}" placeholder="Rechercher un événement, lieu..." class="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 focus:outline-none placeholder-opacity-70 focus:ring-0">
+            </div>
+            <button type="submit" class="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white font-semibold py-3 px-8 rounded-xl shadow-[0_0_20px_rgba(14,165,233,0.3)] transition transform hover:scale-105 flex items-center justify-center">
+                <i class="fas fa-arrow-right sm:mr-2"></i><span class="hidden sm:inline"> Explorer</span>
+            </button>
+        </form>
+    </div>
+    
+    <!-- Bottom Fade (to blend with next section) -->
+    <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-slate-900 to-transparent z-0"></div>
 </section>
 
-<section class="events-section">
-    <div class="container">
+<!-- ═══════════════════════════════════════════════
+     EVENTS SECTION
+     ═══════════════════════════════════════════════ -->
+<section id="events-grid" class="relative z-10 py-16 bg-slate-900 scroll-mt-20">
+    <div class="container mx-auto px-6">
+        
+        <!-- Search Results Banner -->
+        {% if app.request.query.get('q') is not empty %}
+            <div class="mb-10 bg-white rounded-2xl p-6 shadow-xl border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-50/80 rounded-xl flex items-center justify-center text-blue-500 text-xl shadow-inner border border-blue-100">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">Résultats de recherche</h3>
+                        <p class="text-slate-500">Pour : <strong class="text-slate-800">"{{ app.request.query.get('q') }}"</strong></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="bg-blue-100/50 text-blue-700 font-bold px-4 py-2 rounded-lg text-sm border border-blue-200">{{ events|length }} trouvé(s)</span>
+                    <a href="{{ path('event_index') }}#events-grid" class="text-slate-500 hover:text-red-600 transition text-sm flex items-center gap-1 font-medium bg-slate-50 hover:bg-red-50 px-4 py-2 rounded-lg border border-slate-200 hover:border-red-200">
+                        <i class="fas fa-times"></i> Réinitialiser
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
         {% if events is empty %}
-            <div class="no-events">
-                <i class="fas fa-calendar-xmark"></i>
-                <h3>Aucun événement disponible</h3>
-                <p>Revenez bientôt pour découvrir nos prochains événements !</p>
+            <div class="flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-3xl shadow-xl">
+                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 text-4xl mb-4 shadow-inner">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3 class="text-2xl font-serif text-slate-800 font-bold mb-2">Aucun événement disponible</h3>
+                <p class="text-slate-500 text-center max-w-sm">Revenez bientôt ou essayez de modifier votre recherche !</p>
             </div>
         {% else %}
-            <div class="events-grid">
-                {% for event in events %}
-                    {% set isPast = event.date < date() %}
-                    {% set isFull = event.seats <= 0 %}
-                    {% set day = event.date|date('d') %}
-                    {% set month = event.date|date('M')|upper %}
+            
+            {% set featured_events = events|slice(0, 2) %}
+            {% set standard_events = events|slice(2) %}
 
-                    <article class="event-card">
-                        <div class="event-image">
-                            {% if event.image %}
-                                <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}">
-                            {% else %}
-                                <div class="event-image-placeholder">
-                                    <i class="fas fa-calendar-alt"></i>
+            <!-- FEATURED EVENTS: Bento Grid Layout -->
+            {% if featured_events|length > 0 %}
+                <div class="mb-16 reveal-element">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-serif font-bold text-white"><i class="fas fa-star text-amber-400 mr-2"></i> À la Une</h2>
+                        <a href="#standard-events" class="text-blue-400 hover:text-blue-300 transition text-sm font-medium">Voir tout <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {% for event in featured_events %}
+                            {% set isPast = event.date < date() %}
+                            {% set isToday = event.date|date('Y-m-d') == date()|date('Y-m-d') %}
+                            {% set isFull = event.seats <= 0 %}
+                            {% set day = event.date|date('d') %}
+                            {% set month = event.date|date('M')|upper %}
+                            
+                            <div class="group relative rounded-3xl overflow-hidden {{ loop.index == 1 ? 'lg:col-span-2' : 'lg:col-span-1' }} bg-white shadow-xl border border-slate-200 flex flex-col h-[400px]">
+                                <!-- Card Image Header -->
+                                <div class="relative h-48 sm:h-56 overflow-hidden flex-shrink-0">
+                                    {% if event.image %}
+                                        <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover transition duration-700 transform group-hover:scale-105">
+                                    {% else %}
+                                        <div class="w-full h-full bg-slate-100 flex items-center justify-center transition duration-700 transform group-hover:scale-105">
+                                            <i class="fas fa-image text-5xl text-slate-300"></i>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <!-- Badges -->
+                                    <div class="absolute top-4 left-4 flex gap-2">
+                                        {% if isPast %}
+                                            <div class="bg-slate-800/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-white shadow">Terminé</div>
+                                        {% elseif isFull %}
+                                            <div class="bg-red-500/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-white shadow">Complet</div>
+                                        {% elseif isToday %}
+                                            <div class="bg-blue-500/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-white shadow flex items-center gap-1.5">
+                                                <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div> En direct
+                                            </div>
+                                        {% else %}
+                                            <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-slate-800 shadow">
+                                                {{ event.seats }} places
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-2.5 text-center shadow-lg border border-slate-100">
+                                        <div class="text-xl font-bold text-slate-800 leading-none">{{ day }}</div>
+                                        <div class="text-xs uppercase font-medium text-blue-600 mt-1">{{ month }}</div>
+                                    </div>
                                 </div>
-                            {% endif %}
 
-                            <div class="event-date-badge">
-                                <span class="day">{{ day }}</span>
-                                <span class="month">{{ month }}</span>
+                                <!-- Card Body (White) -->
+                                <div class="flex-1 p-6 flex flex-col justify-between">
+                                    <div>
+                                        <h3 class="text-2xl font-serif font-bold text-slate-900 mb-2 truncate group-hover:text-blue-600 transition-colors">{{ event.title }}</h3>
+                                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">{{ event.description }}</p>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+                                        <div class="flex items-center gap-4 text-xs font-medium text-slate-500">
+                                            <span class="flex items-center gap-1.5"><i class="fas fa-map-marker-alt text-blue-500 w-3 text-center"></i> <span class="truncate max-w-[100px]">{{ event.location }}</span></span>
+                                            <span class="flex items-center gap-1.5"><i class="fas fa-clock text-blue-500 w-3 text-center"></i> {{ event.date|date('H:i') }}</span>
+                                        </div>
+                                        
+                                        {% if isPast %}
+                                            <a href="{{ path('event_show', {id: event.id}) }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg transition text-sm font-semibold whitespace-nowrap">Terminé</a>
+                                        {% elseif isFull %}
+                                            <span class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">Complet</span>
+                                        {% else %}
+                                            <a href="{{ path('event_show', {id: event.id}) }}" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg transition shadow-md shadow-blue-500/20 text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap">
+                                                Réserver <i class="fas fa-arrow-right text-xs"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
 
-                            {# <span class="event-badge {{ isPast ? 'past' : 'upcoming' }}">
-                                {{ isPast ? 'Terminé' : 'À venir' }}
-                            </span> #}
-                            <span class="event-badge {{ isPast ? 'past' : (isFull ? 'past' : 'upcoming') }}">
-    {{ isPast ? 'Terminé' : (isFull ? 'Complet' : 'À venir') }}
-</span>
-                        </div>
+            <!-- STANDARD EVENTS CARDS -->
+            {% if standard_events|length > 0 %}
+                <div id="standard-events" class="mb-8">
+                    <h2 class="text-2xl font-serif font-bold text-white mb-8 reveal-element">
+                        <i class="fas fa-layer-group text-blue-400 mr-2"></i> Découvrir plus
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {% for event in standard_events %}
+                            {% set isPast = event.date < date() %}
+                            {% set isToday = event.date|date('Y-m-d') == date()|date('Y-m-d') %}
+                            {% set isFull = event.seats <= 0 %}
+                            {% set day = event.date|date('d') %}
+                            {% set month = event.date|date('M')|upper %}
 
-                        <div class="event-content">
-                            <h3>{{ event.title }}</h3>
+                            <!-- White Card -->
+                            <article class="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] reveal-element flex flex-col h-[380px]">
+                                
+                                <div class="relative h-48 overflow-hidden flex-shrink-0">
+                                     {% if event.image %}
+                                        <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                                    {% else %}
+                                        <div class="w-full h-full bg-slate-100 flex items-center justify-center transition duration-500 group-hover:scale-110">
+                                            <i class="fas fa-image text-3xl text-slate-300"></i>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-lg p-2 text-center shadow font-sans">
+                                        <div class="text-sm font-bold text-slate-800 leading-none">{{ day }}</div>
+                                        <div class="text-[0.65rem] uppercase font-bold text-blue-600 mt-0.5">{{ month }}</div>
+                                    </div>
 
-                            <div class="event-meta">
-                                <span class="meta-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    {{ event.location }}
-                                </span>
-                                <span class="meta-item">
-                                    <i class="fas fa-calendar"></i>
-                                    {{ event.date|date('d/m/Y à H:i') }}
-                                </span>
-                                <span class="meta-item">
-                                    <i class="fas fa-users"></i>
-                                    {{ event.seats }} places
-                                </span>
-                            </div>
+                                    {% if isPast %}
+                                        <div class="absolute top-3 left-3 bg-slate-800/90 text-white px-2 py-1 rounded text-xs font-semibold shadow">Terminé</div>
+                                    {% elseif isFull %}
+                                        <div class="absolute top-3 left-3 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-semibold shadow">Complet</div>
+                                    {% elseif isToday %}
+                                        <div class="bg-blue-500/90 absolute top-3 left-3 text-white px-2 py-1 rounded flex items-center gap-1.5 text-[0.7rem] font-bold shadow">
+                                            <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div> En direct
+                                        </div>
+                                    {% else %}
+                                        <div class="absolute top-3 left-3 bg-white/90 text-slate-800 px-2 py-1 rounded text-xs font-semibold shadow">{{ event.seats }} places</div>
+                                    {% endif %}
 
-                            <p class="event-description">
-                                {{ event.description|slice(0, 120) }}{{ event.description|length > 120 ? '…' : '' }}
-                            </p>
+                                    <!-- Hidden overlay action on hover -->
+                                    <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                       <a href="{{ path('event_show', {id: event.id}) }}" class="bg-white text-slate-800 hover:bg-slate-50 rounded-full w-12 h-12 flex items-center justify-center transition-transform transform scale-75 group-hover:scale-100 shadow-xl">
+                                            <i class="fas fa-arrow-right text-sm"></i>
+                                       </a>
+                                    </div>
+                                </div>
 
-                            {# <div class="event-actions">
-                                <span class="seats-badge">
-                                    <i class="fas fa-ticket-alt"></i> {{ event.seats }} places
-                                </span>
-                                <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-primary">
-                                    <span>Voir & Réserver</span>
-                                    <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div> #}
-                            <div class="event-actions">
-    {% if isPast %}
-        <span class="seats-badge" style="background: transparent; color: var(--gray-600);">
-            <i class="fas fa-clock"></i> Terminé
-        </span>
-        <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-secondary">
-            <span>Voir détails</span>
-            <i class="fas fa-arrow-right"></i>
-        </a>
-    {% elseif isFull %}
-        <span class="seats-badge" style="background: transparent; color: var(--danger);">
-            <i class="fas fa-ban"></i> Complet
-        </span>
-        <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-secondary">
-            <span>Voir détails</span>
-            <i class="fas fa-arrow-right"></i>
-        </a>
-    {% else %}
-        <span class="seats-badge">
-            <i class="fas fa-ticket-alt"></i> {{ event.seats }} places
-        </span>
-        <a href="{{ path('event_show', {id: event.id}) }}" class="btn btn-primary">
-            <span>Voir & Réserver</span>
-            <i class="fas fa-arrow-right"></i>
-        </a>
-    {% endif %}
-</div>
-                        </div>
-                    </article>
-                {% endfor %}
-            </div>
+                                <div class="p-5 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-serif font-bold text-slate-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{{ event.title }}</h3>
+                                        <p class="text-slate-600 text-xs line-clamp-2">{{ event.description }}</p>
+                                    </div>
+                                    
+                                    <div class="space-y-2 mt-4 pt-4 border-t border-slate-100">
+                                        <div class="flex items-center text-xs font-medium text-slate-500">
+                                            <i class="fas fa-map-marker-alt w-4 text-blue-500 text-center"></i> <span class="truncate ml-1">{{ event.location }}</span>
+                                        </div>
+                                        <div class="flex items-center text-xs font-medium text-slate-500">
+                                            <i class="fas fa-clock w-4 text-blue-500 text-center"></i> <span class="ml-1">{{ event.date|date('d/m/Y - H:i') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
         {% endif %}
     </div>
 </section>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Init reveal classes
+        const revealElements = document.querySelectorAll('.reveal-element');
+        revealElements.forEach(el => el.classList.add('reveal-hidden'));
+
+        // Intersection Observer for scroll reveal effect
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('reveal-hidden');
+                    entry.target.classList.add('reveal-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        revealElements.forEach(el => observer.observe(el));
+
+        // Auto-scroll logic UX Improvement
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('q')) {
+            const grid = document.getElementById('events-grid');
+            if (grid) {
+                // Short wait to ensure DOM and layout is completely ready before scrolling
+                setTimeout(() => {
+                    grid.scrollIntoView({ behavior: 'smooth' });
+                }, 150);
+            }
+        }
+    });
+</script>
 {% endblock %}

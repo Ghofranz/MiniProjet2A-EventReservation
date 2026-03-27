@@ -2140,3 +2140,94 @@ body.login-page .nav-menu a {
     margin-top: auto;
     flex-wrap: wrap;
 }
+
+/* =====================================================
+   Dark Homepage Overrides 
+   ===================================================== */
+body.dark-homepage {
+    background-color: #0f172a !important; /* Tailwind slate-900 */
+    color: #f1f5f9 !important; /* Tailwind slate-100 */
+}
+
+/* Navbar in Dark Mode */
+.dark-homepage .navbar {
+    background: rgba(15, 23, 42, 0.75) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark-homepage .navbar .logo, 
+.dark-homepage .navbar .nav-menu a {
+    color: #f8fafc !important;
+}
+
+.dark-homepage .navbar .logo i {
+    text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dark-homepage .navbar .nav-menu a:hover,
+.dark-homepage .navbar .nav-menu a.active {
+    color: #38bdf8 !important;
+    background: rgba(56, 189, 248, 0.1) !important;
+}
+
+.dark-homepage .mobile-menu-toggle {
+    color: #f8fafc !important;
+}
+.dark-homepage .mobile-menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Footer in Dark Mode */
+.dark-homepage .footer {
+    background: #020617 !important; /* Tailwind slate-950 */
+    color: #94a3b8 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark-homepage .footer h3,
+.dark-homepage .footer a {
+    color: #e2e8f0 !important;
+}
+
+.dark-homepage .footer a:hover {
+    color: #38bdf8 !important;
+}
+
+/* Custom Mesh Gradient Animation */
+@keyframes slowPan {
+    0% { transform: scale(1) translate(0, 0); }
+    33% { transform: scale(1.1) translate(2%, 2%); }
+    66% { transform: scale(0.9) translate(-2%, 2%); }
+    100% { transform: scale(1) translate(0, 0); }
+}
+.animate-slow-pan {
+    animation: slowPan 15s ease-in-out infinite alternate;
+}
+
+/* Glow Effect for Badges */
+.badge-glow {
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+    animation: pulse-glow 2s infinite;
+}
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+    100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+}
+
+/* Scroll Reveal classes via JS */
+.reveal-hidden {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
